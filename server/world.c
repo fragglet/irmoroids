@@ -217,8 +217,8 @@ static void missile_hit_rock(AstroObject *missile, AstroObject *target)
 		dx = 512 * cos(i * M_PI_2);
 		dy = 512 * sin(i * M_PI_2);
 		
-		x = target->x + 4 * target->scale * dx;
-		y = target->y + 4 * target->scale * dy;
+		x = (int) (target->x + 4 * target->scale * dx) & 0xffff;
+		y = (int) (target->y + 4 * target->scale * dy) & 0xffff;
 
 		scale = target->scale * bellcurve(7);
 
@@ -352,6 +352,7 @@ static void world_run_players(AstroPlayer *player, gpointer user_data)
 
 	if (turn) {
 		player->avatar->angle += turn * 2048;
+		player->avatar->angle &= 0xffff;
 		irmo_object_set_int(player->avatar->object, "angle",
 				    player->avatar->angle);
 	}
@@ -440,6 +441,9 @@ AstroObject *world_new_rock(int x, int y, float scale)
 }
 
 // $Log$
+// Revision 1.8  2003/09/13 16:12:21  fraggle
+// Fix int overflows
+//
 // Revision 1.7  2003/09/03 02:58:17  fraggle
 // Make rock explosions a bit more random
 //
