@@ -175,6 +175,24 @@ static void rock_collision(AstroObject *rock1, AstroObject *rock2)
 	rock2->dy = momy1 / rock2->size;
 }
 
+static float frand()
+{
+	int r = rand() % 65536;
+
+	return r / 65536.0;
+}
+
+static float bellcurve(int iterations)
+{
+	int i;
+	float f = 0;
+
+	for (i=0; i<iterations; ++i)
+		f += frand();
+
+	return f / iterations;
+}
+
 static void missile_hit_rock(AstroObject *missile, AstroObject *target)
 {
 	int i;
@@ -190,15 +208,33 @@ static void missile_hit_rock(AstroObject *missile, AstroObject *target)
 		AstroObject *rock;
 		int dx, dy;
 		int x, y;
+		float angle;
+		float scale;
+		int speed;
 		
-		dx = 512 * cos(i * M_PI / 2);
-		dy = 512 * sin(i * M_PI / 2);
+		// always start them off at the same place
+
+		dx = 512 * cos(i * M_PI_2);
+		dy = 512 * sin(i * M_PI_2);
 		
 		x = target->x + 4 * target->scale * dx;
 		y = target->y + 4 * target->scale * dy;
+
+		scale = target->scale * bellcurve(7);
+
+		if (scale < 0.3)
+			scale = 0.3;
 		
-		rock = world_new_rock(x, y, 
-					 target->scale * 0.5);
+		rock = world_new_rock(x, y, scale);
+
+		// fly off at a random angle
+		
+		angle = M_PI_2 * (i + bellcurve(3) - 0.5);
+
+		speed = bellcurve(5) * 512;
+
+		dx = speed * cos(angle);
+		dy = speed * sin(angle);
 		
 		rock->dx = target->dx + dx;
 		rock->dy = target->dy + dy;
@@ -404,6 +440,9 @@ AstroObject *world_new_rock(int x, int y, float scale)
 }
 
 // $Log$
+// Revision 1.7  2003/09/03 02:58:17  fraggle
+// Make rock explosions a bit more random
+//
 // Revision 1.6  2003/09/02 20:59:36  fraggle
 // Use subclassing in irmoroids: select the model to be used by the
 // class, not a model number
