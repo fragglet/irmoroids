@@ -316,6 +316,21 @@ static gboolean destroy_defines(gchar *name, AstroDefine *def,
 	return TRUE;
 }
 
+static void normalise_vector(gpointer key, AstroVertex *vertex, gpointer user_data)
+{
+	GLfloat mag;
+
+	mag = vertex->normal[0] * vertex->normal[0]
+	    + vertex->normal[1] * vertex->normal[1]
+	    + vertex->normal[2] * vertex->normal[2];
+
+	mag = sqrt(mag);
+
+	vertex->normal[0] /= mag;
+	vertex->normal[1] /= mag;
+	vertex->normal[2] /= mag;
+}
+
 AstroMesh *mesh_read_from_file(gchar *filename)
 {
 	token_t tok;
@@ -360,6 +375,8 @@ AstroMesh *mesh_read_from_file(gchar *filename)
 
 	fclose(yyin);
 
+	g_hash_table_foreach(mesh->vertexes, (GHFunc) normalise_vector, NULL);
+
 	g_hash_table_foreach_remove(defines, 
 				    (GHRFunc) destroy_defines, NULL);
 	g_hash_table_destroy(defines);
@@ -377,6 +394,9 @@ int main()
 #endif
 
 // $Log$
+// Revision 1.3  2004/04/17 16:06:52  fraggle
+// Normalise vectors in meshes
+//
 // Revision 1.2  2003/06/10 20:55:50  fraggle
 // Use /* -- */ comments for lex headers
 //
