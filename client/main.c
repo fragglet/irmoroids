@@ -19,6 +19,10 @@
 //
 //---------------------------------------------------------------------
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <GL/gl.h>
 #include <SDL.h>
 
@@ -191,6 +195,9 @@ int main(int argc, char *argv[])
 }
 
 // $Log$
+// Revision 1.8  2003/11/20 00:18:02  fraggle
+// Add some fixes to get this compiling under windows
+//
 // Revision 1.7  2003/11/17 01:43:21  fraggle
 // Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
 //

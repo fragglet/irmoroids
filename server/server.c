@@ -163,7 +163,7 @@ void server_init()
 		exit(-1);
 	}
 
-	sock = irmo_socket_new(IRMO_SOCKET_IPV6, SERVER_PORT);
+	sock = irmo_socket_new(IRMO_SOCKET_IPV4, SERVER_PORT);
 
 	if (sock) {
 		printf("server_init: Using IPv6\n");
@@ -196,6 +196,9 @@ void server_run()
 }
 
 // $Log$
+// Revision 1.10  2003/11/20 00:18:03  fraggle
+// Add some fixes to get this compiling under windows
+//
 // Revision 1.9  2003/09/20 16:18:31  fraggle
 // Add ability to send messages to players
 //

@@ -19,6 +19,9 @@
 //
 //---------------------------------------------------------------------
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -99,6 +102,9 @@ void model_draw(int modelnum)
 }
 
 // $Log$
+// Revision 1.4  2003/11/20 00:18:02  fraggle
+// Add some fixes to get this compiling under windows
+//
 // Revision 1.3  2003/09/02 20:59:36  fraggle
 // Use subclassing in irmoroids: select the model to be used by the
 // class, not a model number

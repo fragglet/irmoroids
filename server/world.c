@@ -84,7 +84,7 @@ static void fire_callback(IrmoMethodData *data, gpointer user_data)
 		return;
 	}
 
-	angle = (player->avatar->angle * M_PI * 2) / 0xffff;
+	angle = (player->avatar->angle * G_PI * 2) / 0xffff;
 	
 	misl = world_object_new("Missile", 
 				player->avatar->x, 
@@ -214,8 +214,8 @@ static void missile_hit_rock(AstroObject *missile, AstroObject *target)
 		
 		// always start them off at the same place
 
-		dx = 512 * cos(i * M_PI_2);
-		dy = 512 * sin(i * M_PI_2);
+		dx = 512 * cos(i * G_PI_2);
+		dy = 512 * sin(i * G_PI_2);
 		
 		x = (int) (target->x + 4 * target->scale * dx) & 0xffff;
 		y = (int) (target->y + 4 * target->scale * dy) & 0xffff;
@@ -229,7 +229,7 @@ static void missile_hit_rock(AstroObject *missile, AstroObject *target)
 
 		// fly off at a random angle
 		
-		angle = M_PI_2 * (i + bellcurve(3) - 0.5);
+		angle = G_PI_2 * (i + bellcurve(3) - 0.5);
 
 		speed = bellcurve(5) * 512;
 
@@ -358,7 +358,7 @@ static void world_run_players(AstroPlayer *player, gpointer user_data)
 	}
 
 	if (keystate & KEY_ACCEL) {
-		float angle = (player->avatar->angle * 2 * M_PI) / 0xffff;
+		float angle = (player->avatar->angle * 2 * G_PI) / 0xffff;
 		int dx = SPEED * cos(angle);
 		int dy = SPEED * sin(angle);
 
@@ -441,6 +441,9 @@ AstroObject *world_new_rock(int x, int y, float scale)
 }
 
 // $Log$
+// Revision 1.10  2003/11/20 00:18:03  fraggle
+// Add some fixes to get this compiling under windows
+//
 // Revision 1.9  2003/11/17 01:43:21  fraggle
 // Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
 //

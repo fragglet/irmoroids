@@ -19,8 +19,13 @@
 //
 //---------------------------------------------------------------------
 
-#include <SDL/SDL.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+#include <SDL.h>
 #include <GL/gl.h>
+#include <glib.h>
 #include <math.h>
 
 #define SCREEN_WIDTH 640
@@ -85,7 +90,7 @@ void gfx_draw_circle(int res)
 	glBegin(GL_POLYGON);
 
 	for (i=0; i<res; ++i) {
-		GLfloat angle = (2 * M_PI * i) / res;
+		GLfloat angle = (2 * G_PI * i) / res;
 
 		glVertex2f(cos(angle), sin(angle));
 	}
@@ -106,6 +111,9 @@ void gfx_update()
 }
 
 // $Log$
+// Revision 1.6  2003/11/20 00:18:02  fraggle
+// Add some fixes to get this compiling under windows
+//
 // Revision 1.5  2003/11/17 01:43:21  fraggle
 // Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
 //

@@ -19,6 +19,10 @@
 //
 //---------------------------------------------------------------------
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <glib.h>
@@ -199,9 +203,9 @@ void net_block(void)
 
 long long get_ms()
 {
-	struct timeval nowtime;
+	GTimeVal nowtime;
 
-	gettimeofday(&nowtime, NULL);
+	g_get_current_time(&nowtime);
 
 	return nowtime.tv_sec * 1000 + nowtime.tv_usec / 1000;
 }
@@ -349,8 +353,8 @@ void net_render()
 							      "angle"));
 		//avatar_angle = 180;
 
-		avatar_angle_cos = cos(M_PI * avatar_angle / 180.0);
-		avatar_angle_sin = sin(M_PI * avatar_angle / 180.0);
+		avatar_angle_cos = cos(G_PI * avatar_angle / 180.0);
+		avatar_angle_sin = sin(G_PI * avatar_angle / 180.0);
 		
 		if (gfx_1stperson) {
 			glRotatef(90, -1, 0, 0);
@@ -370,6 +374,9 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.17  2003/11/20 00:18:02  fraggle
+// Add some fixes to get this compiling under windows
+//
 // Revision 1.16  2003/11/17 01:43:21  fraggle
 // Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
 //

@@ -19,9 +19,8 @@
 //
 //---------------------------------------------------------------------
 
-
+#include <glib.h>
 #include <irmo.h>
-#include <sys/time.h>
 
 #include "world.h"
 
@@ -29,9 +28,9 @@
 
 long long get_ms()
 {
-	struct timeval nowtime;
-
-	gettimeofday(&nowtime, NULL);
+	GTimeVal nowtime;
+	
+	g_get_current_time(&nowtime);
 
 	return nowtime.tv_sec * 1000 + nowtime.tv_usec / 1000;
 }
@@ -56,13 +55,16 @@ int main(int argc, char *argv[])
 			world_run();
 			oldmovetime += SAMPLE_TIME;
 		} else
-			usleep(SAMPLE_TIME / 4);
+			g_usleep(SAMPLE_TIME / 4);
 		
 		server_run(); 
 	}
 }
 
 // $Log$
+// Revision 1.5  2003/11/20 00:18:03  fraggle
+// Add some fixes to get this compiling under windows
+//
 // Revision 1.4  2003/09/03 03:16:24  fraggle
 // Start with several small rocks instead of one huge one
 //
