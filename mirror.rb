@@ -154,7 +154,12 @@ class IrmoroidsMirrorServer < MirrorServer
 	end
 end
 
-server = IrmoroidsMirrorServer.new('IPV4', 'random')
+if ARGV.length < 1 
+	puts "Usage: #{$0} <hostname>"
+	exit 0
+end
+
+server = IrmoroidsMirrorServer.new('IPV4', ARGV[0])
 
 #puts "server started"
 
@@ -169,6 +174,9 @@ ensure
 end
 
 # $Log$
+# Revision 1.6  2003/09/13 15:26:41  fraggle
+# Take a host to connect to as a command line argument
+#
 # Revision 1.5  2003/09/10 15:54:47  fraggle
 # Move irmoroids port into IrmoroidsMirrorServer class, define as constant
 #
