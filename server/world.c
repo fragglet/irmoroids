@@ -91,7 +91,7 @@ static void fire_callback(IrmoMethodData *data, gpointer user_data)
 	misl->type = OBJECT_MISSILE;
 	misl->dx = player->avatar->dx + 512 * cos(angle);
 	misl->dy = player->avatar->dy + 512 * sin(angle);
-	misl->size = 1024;
+	misl->size = 512;
 	misl->missile_life = 40;
 	
 	irmo_object_set_int(misl->object, "model", MODEL_MISSILE1);
@@ -284,7 +284,7 @@ static void world_run_objects(AstroObject *obj, gpointer user_data)
 	}
 }
 
-#define SPEED 1024
+#define SPEED 512
 
 static void world_run_players(AstroPlayer *player, gpointer user_data)
 {
@@ -362,7 +362,7 @@ AstroObject *world_new_rock(int x, int y, float scale)
 	obj->type = OBJECT_ROCK;
 	obj->dx = (rand() % (ROCK_SPEED * 2)) - ROCK_SPEED;
 	obj->dy = (rand() % (ROCK_SPEED * 2)) - ROCK_SPEED;
-	obj->size = 2500 * scale;
+	obj->size = 1200 * scale;
 	obj->scale = scale;
 	
 	irmo_object_set_int(obj->object, "scale", scale * 256);
@@ -372,6 +372,9 @@ AstroObject *world_new_rock(int x, int y, float scale)
 }
 
 // $Log$
+// Revision 1.4  2003/09/02 15:49:30  fraggle
+// Make objects smaller in scale (increase arena size)
+//
 // Revision 1.3  2003/09/02 15:32:53  fraggle
 // Limited life on missiles
 //

@@ -71,7 +71,7 @@ static void new_player(IrmoObject *object, AstroClient *client)
 	}
 
 	avatar->type = OBJECT_SHIP;
-	avatar->size = 2300;
+	avatar->size = 1200;
 	
 	irmo_object_set_int(avatar->object, "model", MODEL_SHIP1);
 	irmo_object_set_int(playerobj, "avatar",
@@ -171,6 +171,9 @@ void server_run()
 }
 
 // $Log$
+// Revision 1.7  2003/09/02 15:49:30  fraggle
+// Make objects smaller in scale (increase arena size)
+//
 // Revision 1.6  2003/09/02 15:12:00  fraggle
 // Create an AstroClient object with a list of AstroPlayers for each object.
 // To stop players being destroyed twice

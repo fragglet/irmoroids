@@ -31,7 +31,7 @@
 
 #include "net.h"
 
-#define NUM_STARS 256
+#define NUM_STARS 1024
 
 static GLfloat stars[NUM_STARS][3];
 
@@ -243,7 +243,7 @@ static void net_render_foreach(IrmoObject *obj, gpointer user_data)
 	else if (modelnum == MODEL_MISSILE1)
 		twist_translation(obj);
 
-	scale = irmo_object_get_int(obj, "scale") / 256.0;
+	scale = irmo_object_get_int(obj, "scale") / 512.0;
 	
 	glScalef(scale, scale, scale);
 	
@@ -306,8 +306,6 @@ void net_render()
 		avatar_angle_cos = cos(M_PI * avatar_angle / 180.0);
 		avatar_angle_sin = sin(M_PI * avatar_angle / 180.0);
 		
-		glScalef(0.5, 0.5, 0.5);
-
 		if (gfx_1stperson) {
 			glRotatef(90, -1, 0, 0);
 			glTranslatef(0, 0, -0.2);
@@ -326,6 +324,9 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.7  2003/09/02 15:49:30  fraggle
+// Make objects smaller in scale (increase arena size)
+//
 // Revision 1.6  2003/09/02 14:27:20  fraggle
 // Remove some debugging text. Shut down the server properly. Block with
 // a shorter timeout time to improve performance.

@@ -152,6 +152,7 @@ int main(int argc, char *argv[])
 			glMatrixMode(GL_MODELVIEW);
 			//glFrustum(-0.4, 0.4, -0.3, 0.3, 0.4, 200);
 			gluPerspective(90.0, 1.3333, 0.01, 2000.0);
+			glScalef(2.0, 2.0, 2.0);
 		} else
 			glMatrixMode(GL_PROJECTION);
 
@@ -188,6 +189,9 @@ int main(int argc, char *argv[])
 }
 
 // $Log$
+// Revision 1.4  2003/09/02 15:49:30  fraggle
+// Make objects smaller in scale (increase arena size)
+//
 // Revision 1.3  2003/09/01 19:29:12  fraggle
 // Use the new blocking functions
 //
