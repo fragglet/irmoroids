@@ -10,8 +10,6 @@
 
 #include "net.h"
 
-#define INTERFACES_DIR "../interfaces"
-
 #define NUM_STARS 256
 
 static GLfloat stars[NUM_STARS][3];
@@ -286,6 +284,9 @@ void net_render()
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.6  2003/04/21 19:18:03  sdh300
+// Fix 1st-person mode
+//
 // Revision 1.5  2003/04/21 18:59:04  sdh300
 // The models point in the wrong direction, requiring a 90 degree offset to
 // angles. Fix this in the client side, not the server side.
