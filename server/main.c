@@ -46,8 +46,8 @@ int main(int argc, char *argv[])
 	world_init();
 	server_init();
 
-	for (i=0; i<1; ++i)
-		world_new_rock(-1, -1, 3);
+	for (i=0; i<4; ++i)
+		world_new_rock(-1, -1, 1.5);
 	
 	for (oldmovetime = get_ms();; ) {
 		long long nowtime = get_ms();
@@ -63,6 +63,9 @@ int main(int argc, char *argv[])
 }
 
 // $Log$
+// Revision 1.4  2003/09/03 03:16:24  fraggle
+// Start with several small rocks instead of one huge one
+//
 // Revision 1.3  2003/09/01 14:35:51  fraggle
 // Rename Universe -> World
 //
