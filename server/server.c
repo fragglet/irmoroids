@@ -115,12 +115,12 @@ void server_init()
 		exit(-1);
 	}
 
-	sock = irmo_socket_new(AF_INET6, SERVER_PORT);
+	sock = irmo_socket_new(IRMO_SOCKET_IPV6, SERVER_PORT);
 
 	if (sock) {
 		printf("server_init: Using IPv6\n");
 	} else {
-		sock = irmo_socket_new(AF_INET, SERVER_PORT);
+		sock = irmo_socket_new(IRMO_SOCKET_IPV4, SERVER_PORT);
 
 		if (sock) {
 			printf("server_init: Using IPv4\n");
@@ -148,6 +148,9 @@ void server_run()
 }
 
 // $Log$
+// Revision 1.3  2003/08/26 14:58:17  fraggle
+// Stop using AF_* in irmoroids.
+//
 // Revision 1.2  2003/08/06 16:16:03  fraggle
 // IPv6 support
 //

@@ -99,6 +99,14 @@ void player_callback(IrmoMethodData *data, gpointer user_data)
 	player = irmo_universe_get_object_for_id(universe, id);
 }
 
+void all_object_callback(IrmoObject *object, gchar *varname, gpointer user_data)
+{
+	printf("object %i(%s)::%s changed\n", 
+	       irmo_object_get_id(object),
+	       irmo_object_get_class(object),
+	       varname);
+}
+
 void net_connect(char *host)
 {
 	IrmoInterfaceSpec *spec; 
@@ -131,7 +139,7 @@ void net_connect(char *host)
 	}
 
 
-	connection = irmo_connect(AF_UNSPEC, 
+	connection = irmo_connect(IRMO_SOCKET_AUTO, 
 				  host, SERVER_PORT,
 				  spec, client_universe);
 
@@ -146,6 +154,8 @@ void net_connect(char *host)
 
 	universe = irmo_connection_get_universe(connection);
 
+	//	irmo_universe_watch_class(universe, NULL, NULL, 
+	//			all_object_callback, NULL);
 	irmo_universe_method_watch(client_universe, "assoc_player",
 				   player_callback, NULL);
 
@@ -309,6 +319,9 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.3  2003/08/26 14:58:17  fraggle
+// Stop using AF_* in irmoroids.
+//
 // Revision 1.2  2003/08/06 16:16:02  fraggle
 // IPv6 support
 //

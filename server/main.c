@@ -21,6 +21,7 @@
 
 
 #include <irmo.h>
+#include <sys/time.h>
 
 #include "universe.h"
 
@@ -62,8 +63,11 @@ int main(int argc, char *argv[])
 }
 
 // $Log$
-// Revision 1.1  2003/06/09 21:34:37  fraggle
-// Initial revision
+// Revision 1.2  2003/08/26 14:58:17  fraggle
+// Stop using AF_* in irmoroids.
+//
+// Revision 1.1.1.1  2003/06/09 21:34:37  fraggle
+// Initial sourceforge import
 //
 // Revision 1.3  2003/06/09 21:14:09  sdh300
 // Add Id tag and copyright notice
