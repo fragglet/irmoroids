@@ -92,6 +92,7 @@ static void fire_callback(IrmoMethodData *data, gpointer user_data)
 	misl->dx = player->avatar->dx + 512 * cos(angle);
 	misl->dy = player->avatar->dy + 512 * sin(angle);
 	misl->size = 1024;
+	misl->missile_life = 40;
 	
 	irmo_object_set_int(misl->object, "model", MODEL_MISSILE1);
 }
@@ -248,6 +249,13 @@ static void run_collisions(AstroObject *obj1, AstroObject *obj2)
 
 static void world_run_objects(AstroObject *obj, gpointer user_data)
 {
+	if (obj->type == OBJECT_MISSILE) {
+		--obj->missile_life;
+
+		if (obj->missile_life <= 0)
+			obj->destroyed = TRUE;
+	}
+
 	if (obj->dx || obj->dy) {
 		int oldx=obj->x, oldy=obj->y;
 	
@@ -364,6 +372,9 @@ AstroObject *world_new_rock(int x, int y, float scale)
 }
 
 // $Log$
+// Revision 1.3  2003/09/02 15:32:53  fraggle
+// Limited life on missiles
+//
 // Revision 1.2  2003/09/02 15:12:00  fraggle
 // Create an AstroClient object with a list of AstroPlayers for each object.
 // To stop players being destroyed twice

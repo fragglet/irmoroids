@@ -45,6 +45,7 @@ struct _AstroObject {
 	int x, y;
 	int angle;
 	int dx, dy;
+	int missile_life;
 };
 
 struct _AstroPlayer {
@@ -70,6 +71,9 @@ AstroObject *world_new_rock(int x, int y, float scale);
 #endif /* #ifndef ASTRO_TYPES_H */
 
 // $Log$
+// Revision 1.3  2003/09/02 15:32:53  fraggle
+// Limited life on missiles
+//
 // Revision 1.2  2003/09/02 15:12:00  fraggle
 // Create an AstroClient object with a list of AstroPlayers for each object.
 // To stop players being destroyed twice
