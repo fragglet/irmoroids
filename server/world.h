@@ -25,6 +25,7 @@
 typedef struct _AstroObject AstroObject;
 typedef struct _AstroModel AstroModel;
 typedef struct _AstroPlayer AstroPlayer;
+typedef struct _AstroClient AstroClient;
 
 #include <glib.h>
 #include <irmo.h>
@@ -47,10 +48,15 @@ struct _AstroObject {
 };
 
 struct _AstroPlayer {
-	IrmoClient *client;
+	AstroClient *client;
 	IrmoObject *client_obj;		// client side player object
 	IrmoObject *player_obj; 	// a Player object about player
 	AstroObject *avatar;		// their ship
+};
+
+struct _AstroClient {
+	IrmoClient *client;
+	GSList *players;
 };
 
 extern IrmoWorld *world;
@@ -64,6 +70,10 @@ AstroObject *world_new_rock(int x, int y, float scale);
 #endif /* #ifndef ASTRO_TYPES_H */
 
 // $Log$
+// Revision 1.2  2003/09/02 15:12:00  fraggle
+// Create an AstroClient object with a list of AstroPlayers for each object.
+// To stop players being destroyed twice
+//
 // Revision 1.1  2003/09/01 14:35:51  fraggle
 // Rename Universe -> World
 //

@@ -40,9 +40,14 @@ static void destroy_player(IrmoClient *client, AstroPlayer *player)
 	irmo_object_destroy(player->player_obj);
 
 	world_object_destroy(player->avatar);
+
+	player->client->players = g_slist_remove(player->client->players,
+						 player);
+	
+	free(player);
 }
 
-static void new_player(IrmoObject *object, IrmoClient *client)
+static void new_player(IrmoObject *object, AstroClient *client)
 {
 	IrmoWorld *client_world;
 	AstroPlayer *player;
@@ -78,13 +83,13 @@ static void new_player(IrmoObject *object, IrmoClient *client)
 	player->client_obj = object;
 	player->player_obj = playerobj;
 	player->avatar = avatar;
-	
+
 	world_players = g_slist_append(world_players, player);
 
 	// call client and tell them to associate the new player
 	// with their own player object
 
-	client_world = irmo_client_get_world(client);
+	client_world = irmo_client_get_world(client->client);
 
 	irmo_world_method_call(client_world, "assoc_player",
 				  irmo_object_get_id(object),
@@ -92,18 +97,34 @@ static void new_player(IrmoObject *object, IrmoClient *client)
 
 	irmo_object_watch_destroy(object, (IrmoObjCallback) destroy_player,
 				  player);
-	irmo_client_watch_disconnect(client, 
-				(IrmoClientCallback) destroy_player, 
-				player);
+
+	client->players = g_slist_append(client->players, player);
+}
+
+static void on_disconnect(IrmoClient *client, AstroClient *as_client)
+{
+	while (as_client->players) {
+		destroy_player(client, 
+			       (AstroPlayer *) g_slist_nth_data(as_client->players, 0));
+	}
+	
+	free(as_client);
 }
 
 static void on_connect(IrmoClient *client, gpointer user_data)
 {
+	AstroClient *as_client;
 	IrmoWorld *client_world 
 		= irmo_client_get_world(client);
 
+	as_client = g_new0(AstroClient, 1);
+	as_client->client = client;
+	
+	irmo_client_watch_disconnect(client, 
+				     (IrmoClientCallback) on_disconnect,
+				     as_client);
 	irmo_world_watch_new(client_world, "Player",
-				(IrmoObjCallback) new_player, client);
+			     (IrmoObjCallback) new_player, as_client);
 }
 
 void server_init()
@@ -150,6 +171,10 @@ void server_run()
 }
 
 // $Log$
+// Revision 1.6  2003/09/02 15:12:00  fraggle
+// Create an AstroClient object with a list of AstroPlayers for each object.
+// To stop players being destroyed twice
+//
 // Revision 1.5  2003/09/01 17:04:32  fraggle
 // destroy players when the client player object is destroyed as well
 // as when the client disconnects

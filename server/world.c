@@ -78,7 +78,7 @@ static void fire_callback(IrmoMethodData *data, gpointer user_data)
 
 	player = find_player(fireplayer);
 
-	if (player->client != irmo_method_get_source(data)) {
+	if (player->client->client != irmo_method_get_source(data)) {
 		printf("fire_callback: fire from wrong client\n");
 		return;
 	}
@@ -364,6 +364,10 @@ AstroObject *world_new_rock(int x, int y, float scale)
 }
 
 // $Log$
+// Revision 1.2  2003/09/02 15:12:00  fraggle
+// Create an AstroClient object with a list of AstroPlayers for each object.
+// To stop players being destroyed twice
+//
 // Revision 1.1  2003/09/01 14:35:51  fraggle
 // Rename Universe -> World
 //
