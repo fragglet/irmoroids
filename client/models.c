@@ -69,7 +69,7 @@ void model_draw(int modelnum)
 				= (AstroVertex *) poly->vertexes->pdata[n];
 
 			glNormal3fv(v->normal);
-	//printf("%f, %f, %f\n", v->normal[0], v->normal[1], v->normal[2]);
+//	printf("%f, %f, %f\n", v->normal[0], v->normal[1], v->normal[2]);
 			glVertex3fv(v->pt);
 		}
 
@@ -78,6 +78,9 @@ void model_draw(int modelnum)
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2003/03/17 18:21:39  sdh300
+// Use config.h for MODELS_DIR
+//
 // Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
 // Initial import
 //

@@ -83,15 +83,33 @@ static void run_sdl_events()
 	}
 }
 
+extern gboolean irmo_proto_use_preexec;
+static char *hostname;
+
+void parse_cmd_line(int argc, char *argv[])
+{
+	int i;
+
+	hostname = "localhost";
+
+	for (i=1; i<argc; ++i) {
+		if (!strcmp(argv[i], "--limit")) {
+			++i;
+			net_limit = atoi(argv[i]);
+		} else if (!strcmp(argv[i], "--no-preexec")) {
+			irmo_proto_use_preexec = FALSE;
+		} else {
+			hostname = argv[i];
+		}
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	GLfloat angle=0.01;
-	gchar *hostname = "localhost";
 	int i;
 
-	for (i=1; i<argc; ++i) {
-		hostname = argv[i];
-	}
+	parse_cmd_line(argc, argv);
 
 	models_init();
 	gfx_init();
@@ -127,15 +145,14 @@ int main(int argc, char *argv[])
 		glEnable(GL_COLOR_MATERIAL);
 		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
+		glScalef(0.3, 0.3, 0.3);
 
 		glEnable(GL_LIGHTING);
 		glEnable(GL_LIGHT0);
 		glLightfv(GL_LIGHT0, GL_POSITION, main_light_position);
-
-		glScalef(0.3, 0.3, 0.3);
 		
 //		glScalef(1, 1, 1);
-		//	gluLookAt(32767, 32767, 10, 18397, 9848, 0, 0, 0, 1);
+//			gluLookAt(32767, 32767, 10, 18397, 9848, 0, 0, 0, 1);
 		
 		net_render();
 		
@@ -150,6 +167,9 @@ int main(int argc, char *argv[])
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2003/04/21 19:18:02  sdh300
+// Fix 1st-person mode
+//
 // Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
 // Initial import
 //

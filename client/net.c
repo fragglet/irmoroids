@@ -27,6 +27,8 @@ IrmoObject *player_avatar;
 gboolean gfx_rotate = TRUE;
 gboolean gfx_1stperson = FALSE;
 
+int net_limit = 1000;
+
 static GLfloat avatar_x, avatar_y;
 static GLfloat avatar_angle;
 static GLfloat avatar_angle_cos, avatar_angle_sin;
@@ -116,6 +118,8 @@ void net_connect(char *host)
 		fprintf(stderr, "unable to connect to server\n");
 		exit(-1);
 	}
+
+	irmo_client_set_max_sendwindow(connection, net_limit);
 
 	irmo_interface_spec_unref(spec);
 
@@ -284,6 +288,9 @@ void net_render()
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.7  2003/05/20 16:44:56  sdh300
+// Remove duplicated INTERFACES_DIR
+//
 // Revision 1.6  2003/04/21 19:18:03  sdh300
 // Fix 1st-person mode
 //
