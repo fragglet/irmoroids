@@ -99,11 +99,6 @@ int main(int argc, char *argv[])
 
 	printf("initted gfx\n");
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	//glFrustum(-0.4, 0.4, -0.3, 0.3, 0.4, 200);
-	gluPerspective(90.0, 1.3333, 0.1, 2000.0);
-
 	/*
 	usleep(100);
 	net_run();
@@ -114,9 +109,11 @@ int main(int argc, char *argv[])
 		
 		gfx_clear();
 
-		if (gfx_1stperson)
+		if (gfx_1stperson) {
 			glMatrixMode(GL_MODELVIEW);
-		else
+			//glFrustum(-0.4, 0.4, -0.3, 0.3, 0.4, 200);
+			gluPerspective(90.0, 1.3333, 0.01, 2000.0);
+		} else
 			glMatrixMode(GL_PROJECTION);
 
 		glLightfv(GL_LIGHT0, GL_AMBIENT, main_light_ambient);
@@ -153,3 +150,6 @@ int main(int argc, char *argv[])
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
+// Initial import
+//

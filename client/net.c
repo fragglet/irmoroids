@@ -269,8 +269,8 @@ void net_render()
 		glScalef(0.5, 0.5, 0.5);
 
 		if (gfx_1stperson) {
-			glRotatef(90, 1, 0, 0);
-			glTranslatef(0, 0, 0.5);
+			glRotatef(90, -1, 0, 0);
+			glTranslatef(0, 0, -0.2);
 		}
 		
 		if (gfx_rotate || gfx_1stperson)
@@ -286,6 +286,10 @@ void net_render()
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.5  2003/04/21 18:59:04  sdh300
+// The models point in the wrong direction, requiring a 90 degree offset to
+// angles. Fix this in the client side, not the server side.
+//
 // Revision 1.4  2003/04/21 18:48:51  sdh300
 // Fix rocks not rotating smoothly
 //
