@@ -35,7 +35,7 @@ class MirrorServer
 		@conn = Irmo::connect(type, host, port, remote_ifspec,
 				      @local_world)
 
-		puts "connected to #{host}"
+		#puts "connected to #{host}"
 
 		@local_ifspec = local_ifspec
 		@remote_ifspec = remote_ifspec
@@ -84,13 +84,13 @@ class MirrorServer
 			obj2 = @local_world.new_object(obj.get_class)
 
 			c2sobj[obj.id] = obj2
-			@s2cobj[obj2.id] = Translation.new(cl, obj)
+			@s2cobj[obj2.id] = @@Translation.new(cl, obj)
 		end
 
 		cl.world.watch do |obj,var|
 			obj2 = c2sobj[obj.id]
 
-			puts "set #{obj.id}::#{var}"
+			#puts "set #{obj.id}::#{var}"
 			# copy it
 
 			obj2.set(var, obj.get(var))
@@ -113,10 +113,11 @@ class MirrorServer
 
 	def shutdown
 		@conn.disconnect
+		@server.shutdown
 	end
 
 	def block
-		Irmo::Socket.block([@conn.socket, @socket], 100)
+		Irmo::Socket.block([@conn.socket, @socket], 50)
 	end
 
 	def run
@@ -133,7 +134,7 @@ class IrmoroidsMirrorServer < MirrorServer
 		super(type, host, port, remote_ifspec, local_ifspec)
 
 		@server.watch_connect do 
-			puts "got a new connection"
+			#puts "got a new connection"
 		end
 
 		@local_world.watch_method('assoc_player') do |clobj,svobj|
@@ -153,7 +154,7 @@ end
 
 server = IrmoroidsMirrorServer.new('IPV4', 'random', 2048)
 
-puts "server started"
+#puts "server started"
 
 begin
 	loop do
@@ -161,11 +162,15 @@ begin
 		server.run
 	end
 ensure
-	puts "shutting down"
+	#puts "shutting down"
 	server.shutdown
 end
 
 # $Log$
+# Revision 1.4  2003/09/02 14:27:20  fraggle
+# Remove some debugging text. Shut down the server properly. Block with
+# a shorter timeout time to improve performance.
+#
 # Revision 1.3  2003/09/01 19:29:12  fraggle
 # Use the new blocking functions
 #

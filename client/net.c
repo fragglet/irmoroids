@@ -139,7 +139,7 @@ void net_connect(char *host)
 	}
 
 
-	connection = irmo_connect(IRMO_SOCKET_AUTO, 
+	connection = irmo_connect(IRMO_SOCKET_IPV4, 
 				  host, SERVER_PORT,
 				  spec, client_world);
 
@@ -149,6 +149,8 @@ void net_connect(char *host)
 	}
 
 	irmo_client_set_max_sendwindow(connection, net_limit);
+
+	irmo_client_watch_disconnect(connection, exit, NULL);
 
 	irmo_interface_spec_unref(spec);
 
@@ -175,7 +177,7 @@ void net_run(void)
 
 void net_block(void)
 {
-	irmo_socket_block(irmo_connection_get_socket(connection), 100);
+	irmo_socket_block(irmo_connection_get_socket(connection), 50);
 }
 
 int shown = 0;
@@ -324,6 +326,10 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.6  2003/09/02 14:27:20  fraggle
+// Remove some debugging text. Shut down the server properly. Block with
+// a shorter timeout time to improve performance.
+//
 // Revision 1.5  2003/09/01 19:29:12  fraggle
 // Use the new blocking functions
 //
