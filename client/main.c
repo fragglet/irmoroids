@@ -78,7 +78,7 @@ static void run_sdl_keydown(SDL_Event *ev)
 		client_keystate |= KEY_ACCEL;
 		break;
 	case SDLK_SPACE:
-		irmo_universe_method_call(universe, "fire",
+		irmo_world_method_call(world, "fire",
 					  irmo_object_get_id(player));
 		return;
 	default:
@@ -188,8 +188,11 @@ int main(int argc, char *argv[])
 }
 
 // $Log$
-// Revision 1.1  2003/06/09 21:34:36  fraggle
-// Initial revision
+// Revision 1.2  2003/09/01 14:35:51  fraggle
+// Rename Universe -> World
+//
+// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
+// Initial sourceforge import
 //
 // Revision 1.4  2003/06/09 21:14:02  sdh300
 // Add Id tag and copyright notice

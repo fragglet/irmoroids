@@ -27,9 +27,9 @@
 void net_connect(char *host);
 
 extern IrmoConnection *connection;
-extern IrmoUniverse *universe;
+extern IrmoWorld *world;
 
-extern IrmoUniverse *client_universe;
+extern IrmoWorld *client_world;
 extern IrmoObject *client_player_obj;
 extern guint client_keystate;
 
@@ -43,8 +43,11 @@ extern int net_limit;
 #endif /* #ifndef ASTRO_NET_H */
 
 // $Log$
-// Revision 1.1  2003/06/09 21:34:36  fraggle
-// Initial revision
+// Revision 1.2  2003/09/01 14:35:51  fraggle
+// Rename Universe -> World
+//
+// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
+// Initial sourceforge import
 //
 // Revision 1.3  2003/06/09 21:14:03  sdh300
 // Add Id tag and copyright notice

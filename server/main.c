@@ -23,7 +23,7 @@
 #include <irmo.h>
 #include <sys/time.h>
 
-#include "universe.h"
+#include "world.h"
 
 #define SAMPLE_TIME 50
 
@@ -43,17 +43,17 @@ int main(int argc, char *argv[])
 
 	srand(time(NULL));
 	
-	universe_init();
+	world_init();
 	server_init();
 
 	for (i=0; i<1; ++i)
-		universe_new_rock(-1, -1, 3);
+		world_new_rock(-1, -1, 3);
 	
 	for (oldmovetime = get_ms();; ) {
 		long long nowtime = get_ms();
 		
 		if (nowtime - oldmovetime > SAMPLE_TIME) {
-			universe_run();
+			world_run();
 			oldmovetime += SAMPLE_TIME;
 		} else
 			usleep(SAMPLE_TIME / 4);
@@ -63,6 +63,9 @@ int main(int argc, char *argv[])
 }
 
 // $Log$
+// Revision 1.3  2003/09/01 14:35:51  fraggle
+// Rename Universe -> World
+//
 // Revision 1.2  2003/08/26 14:58:17  fraggle
 // Stop using AF_* in irmoroids.
 //

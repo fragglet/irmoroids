@@ -30,13 +30,13 @@
 #include "common/config.h"
 #include "common/models.h"
 #include "common/net.h"
-#include "universe.h"
+#include "world.h"
 
 static gboolean collision_occurred;
 
-IrmoUniverse *universe;
-GSList *universe_objects = NULL;
-GSList *universe_players = NULL;
+IrmoWorld *world;
+GSList *world_objects = NULL;
+GSList *world_players = NULL;
 
 static gint find_player_foreach(AstroPlayer *p1, IrmoObject *needle)
 {
@@ -50,7 +50,7 @@ AstroPlayer *find_player(IrmoObject *needle)
 {
 	GSList *result;
 	
-	result = g_slist_find_custom(universe_players,
+	result = g_slist_find_custom(world_players,
 				     needle,
 				     (GCompareFunc) find_player_foreach);
 
@@ -69,7 +69,7 @@ static void fire_callback(IrmoMethodData *data, gpointer user_data)
 	float angle;
 	
 	id = irmo_method_arg_int(data, "player");
-	fireplayer = irmo_universe_get_object_for_id(universe, id);
+	fireplayer = irmo_world_get_object_for_id(world, id);
 
 	if (!fireplayer) {
 		printf("fire_callback: player object not found!\n");
@@ -85,7 +85,7 @@ static void fire_callback(IrmoMethodData *data, gpointer user_data)
 
 	angle = (player->avatar->angle * M_PI * 2) / 0xffff;
 	
-	misl = universe_object_new(player->avatar->x, player->avatar->y,
+	misl = world_object_new(player->avatar->x, player->avatar->y,
 				   player->avatar->angle);
 
 	misl->type = OBJECT_MISSILE;
@@ -96,25 +96,25 @@ static void fire_callback(IrmoMethodData *data, gpointer user_data)
 	irmo_object_set_int(misl->object, "model", MODEL_MISSILE1);
 }
 
-void universe_init()
+void world_init()
 {
 	IrmoInterfaceSpec *spec;
 
 	spec = irmo_interface_spec_new(SERVER_INTERFACE_FILE);
 
 	if (!spec) {
-		fprintf(stderr, "universe_init: Cant load interface spec\n");
+		fprintf(stderr, "world_init: Cant load interface spec\n");
 		return;
 	}
 
-	universe = irmo_universe_new(spec);
+	world = irmo_world_new(spec);
 
 	irmo_interface_spec_unref(spec);
 
-	irmo_universe_method_watch(universe, "fire", fire_callback, NULL);
+	irmo_world_method_watch(world, "fire", fire_callback, NULL);
 }
 
-AstroObject *universe_object_new(int x, int y, int angle)
+AstroObject *world_object_new(int x, int y, int angle)
 {
 	IrmoObject *irmoobj;
 	AstroObject *obj;
@@ -126,7 +126,7 @@ AstroObject *universe_object_new(int x, int y, int angle)
 		y = rand() & 0xffff;
 	}
 
-	irmoobj = irmo_object_new(universe, "Object");
+	irmoobj = irmo_object_new(world, "Object");
 
 	if (!irmoobj)
 		return NULL;
@@ -143,14 +143,14 @@ AstroObject *universe_object_new(int x, int y, int angle)
 	irmo_object_set_int(irmoobj, "angle", obj->angle);
 	irmo_object_set_int(irmoobj, "scale", obj->scale * 256);
 	
-	universe_objects = g_slist_append(universe_objects, obj);
+	world_objects = g_slist_append(world_objects, obj);
 
 	return obj;
 }
 
-void universe_object_destroy(AstroObject *obj)
+void world_object_destroy(AstroObject *obj)
 {
-	universe_objects = g_slist_remove(universe_objects, obj);
+	world_objects = g_slist_remove(world_objects, obj);
 
 	irmo_object_destroy(obj->object);
 
@@ -192,7 +192,7 @@ static void missile_hit_rock(AstroObject *missile, AstroObject *target)
 		x = target->x + 4 * target->scale * dx;
 		y = target->y + 4 * target->scale * dy;
 		
-		rock = universe_new_rock(x, y, 
+		rock = world_new_rock(x, y, 
 					 target->scale * 0.5);
 		
 		rock->dx = target->dx + dx;
@@ -246,7 +246,7 @@ static void run_collisions(AstroObject *obj1, AstroObject *obj2)
 	}
 }
 
-static void universe_run_objects(AstroObject *obj, gpointer user_data)
+static void world_run_objects(AstroObject *obj, gpointer user_data)
 {
 	if (obj->dx || obj->dy) {
 		int oldx=obj->x, oldy=obj->y;
@@ -263,7 +263,7 @@ static void universe_run_objects(AstroObject *obj, gpointer user_data)
 		
 		collision_occurred = FALSE;
 
-		g_slist_foreach(universe_objects,
+		g_slist_foreach(world_objects,
 				(GFunc) run_collisions, obj);
 
 		if (collision_occurred) {
@@ -278,7 +278,7 @@ static void universe_run_objects(AstroObject *obj, gpointer user_data)
 
 #define SPEED 1024
 
-static void universe_run_players(AstroPlayer *player, gpointer user_data)
+static void world_run_players(AstroPlayer *player, gpointer user_data)
 {
 	guint keystate;
 	int turn = 0;
@@ -309,7 +309,7 @@ static void universe_run_players(AstroPlayer *player, gpointer user_data)
 
 // garbage collect destroyed objects
 
-static gint universe_run_gc_find(AstroObject *a, AstroObject *b)
+static gint world_run_gc_find(AstroObject *a, AstroObject *b)
 {
 	if (a->destroyed)
 		return 0;
@@ -317,39 +317,39 @@ static gint universe_run_gc_find(AstroObject *a, AstroObject *b)
 	return 1;
 }
 
-static void universe_run_gc()
+static void world_run_gc()
 {
 	GSList *found;
 
-	while ((found = g_slist_find_custom(universe_objects, NULL,
+	while ((found = g_slist_find_custom(world_objects, NULL,
 					    (GCompareFunc)
-					    universe_run_gc_find))) {
+					    world_run_gc_find))) {
 		AstroObject *obj
 			= (AstroObject *) g_slist_nth_data(found, 0);
 
-		universe_object_destroy(obj);
+		world_object_destroy(obj);
 	}
 }
 
-void universe_run()
+void world_run()
 {
-	g_slist_foreach(universe_objects, 
-			(GFunc) universe_run_objects, NULL);
-	g_slist_foreach(universe_players,
-			(GFunc) universe_run_players, NULL);
+	g_slist_foreach(world_objects, 
+			(GFunc) world_run_objects, NULL);
+	g_slist_foreach(world_players,
+			(GFunc) world_run_players, NULL);
 
-	universe_run_gc();	
+	world_run_gc();	
 }
 
 #define ROCK_SPEED 512
 
 int misl = 0;
 
-AstroObject *universe_new_rock(int x, int y, float scale)
+AstroObject *world_new_rock(int x, int y, float scale)
 {
 	AstroObject *obj;
 	
-	obj = universe_object_new(x, y, 0);
+	obj = world_object_new(x, y, 0);
 
 	obj->type = OBJECT_ROCK;
 	obj->dx = (rand() % (ROCK_SPEED * 2)) - ROCK_SPEED;
@@ -364,8 +364,11 @@ AstroObject *universe_new_rock(int x, int y, float scale)
 }
 
 // $Log$
-// Revision 1.1  2003/06/09 21:34:37  fraggle
-// Initial revision
+// Revision 1.1  2003/09/01 14:35:51  fraggle
+// Rename Universe -> World
+//
+// Revision 1.1.1.1  2003/06/09 21:34:37  fraggle
+// Initial sourceforge import
 //
 // Revision 1.5  2003/06/09 21:14:09  sdh300
 // Add Id tag and copyright notice

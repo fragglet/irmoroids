@@ -36,9 +36,9 @@
 static GLfloat stars[NUM_STARS][3];
 
 IrmoConnection *connection;
-IrmoUniverse *universe;
+IrmoWorld *world;
 
-IrmoUniverse *client_universe;
+IrmoWorld *client_world;
 IrmoObject *client_player_obj;
 guint client_keystate;
 
@@ -96,7 +96,7 @@ void player_callback(IrmoMethodData *data, gpointer user_data)
 {
 	irmo_objid_t id = irmo_method_arg_int(data, "svobj");
 
-	player = irmo_universe_get_object_for_id(universe, id);
+	player = irmo_world_get_object_for_id(world, id);
 }
 
 void all_object_callback(IrmoObject *object, gchar *varname, gpointer user_data)
@@ -112,7 +112,7 @@ void net_connect(char *host)
 	IrmoInterfaceSpec *spec; 
 	IrmoInterfaceSpec *client_spec;
 
-	// build client universe
+	// build client world
 
 	client_spec = irmo_interface_spec_new(CLIENT_INTERFACE_FILE);
 
@@ -121,12 +121,12 @@ void net_connect(char *host)
 		exit(-1);
 	}
 
-	client_universe = irmo_universe_new(client_spec);
+	client_world = irmo_world_new(client_spec);
 	irmo_interface_spec_unref(client_spec);
 
 	// create an object for the player
 
-	client_player_obj = irmo_object_new(client_universe, "Player");
+	client_player_obj = irmo_object_new(client_world, "Player");
 	irmo_object_set_string(client_player_obj, "name", getenv("USER"));
 
 	// load server spec
@@ -141,7 +141,7 @@ void net_connect(char *host)
 
 	connection = irmo_connect(IRMO_SOCKET_AUTO, 
 				  host, SERVER_PORT,
-				  spec, client_universe);
+				  spec, client_world);
 
 	if (!connection) {
 		fprintf(stderr, "unable to connect to server\n");
@@ -152,11 +152,11 @@ void net_connect(char *host)
 
 	irmo_interface_spec_unref(spec);
 
-	universe = irmo_connection_get_universe(connection);
+	world = irmo_connection_get_world(connection);
 
-	//	irmo_universe_watch_class(universe, NULL, NULL, 
+	//	irmo_world_watch_class(world, NULL, NULL, 
 	//			all_object_callback, NULL);
-	irmo_universe_method_watch(client_universe, "assoc_player",
+	irmo_world_method_watch(client_world, "assoc_player",
 				   player_callback, NULL);
 
 	make_stars();
@@ -286,7 +286,7 @@ void net_render()
 	if (player) {
 		avatar_id = irmo_object_get_int(player, "avatar");
 		
-		player_avatar = irmo_universe_get_object_for_id(universe, avatar_id);
+		player_avatar = irmo_world_get_object_for_id(world, avatar_id);
 //		printf("player: id %i\n", avatar_id);
 
 		avatar_x = coord_translate(irmo_object_get_int(player_avatar, "x"));
@@ -314,11 +314,14 @@ void net_render()
 //	net_render_border();
 	net_render_stars();
 	
-	irmo_universe_foreach_object(universe, "Object",
+	irmo_world_foreach_object(world, "Object",
 				     net_render_foreach, NULL);
 }
 
 // $Log$
+// Revision 1.4  2003/09/01 14:35:51  fraggle
+// Rename Universe -> World
+//
 // Revision 1.3  2003/08/26 14:58:17  fraggle
 // Stop using AF_* in irmoroids.
 //

@@ -26,7 +26,7 @@
 #include "common/config.h"
 #include "common/models.h"
 #include "common/net.h"
-#include "universe.h"
+#include "world.h"
 
 static IrmoSocket *sock;
 static IrmoServer *server;
@@ -35,30 +35,30 @@ static IrmoServer *server;
 
 static void destroy_player(IrmoClient *client, AstroPlayer *player)
 {
-	universe_players = g_slist_remove(universe_players, player);
+	world_players = g_slist_remove(world_players, player);
 
 	irmo_object_destroy(player->player_obj);
 
-	universe_object_destroy(player->avatar);
+	world_object_destroy(player->avatar);
 }
 
 static void new_player(IrmoObject *object, IrmoClient *client)
 {
-	IrmoUniverse *client_universe;
+	IrmoWorld *client_world;
 	AstroPlayer *player;
 	IrmoObject *playerobj;
 	AstroObject *avatar;
 
 	printf("new player created\n");
 
-	playerobj = irmo_object_new(universe, "Player");
+	playerobj = irmo_object_new(world, "Player");
 
 	if (!playerobj) {
 		fprintf(stderr, "No more objects for new player!\n");
 		return;
 	}
 
-	avatar = universe_object_new(-1, -1, 4096);
+	avatar = world_object_new(-1, -1, 4096);
 
 	if (!avatar) {
 		fprintf(stderr, "No more objects for player avatar!\n");
@@ -79,14 +79,14 @@ static void new_player(IrmoObject *object, IrmoClient *client)
 	player->player_obj = playerobj;
 	player->avatar = avatar;
 	
-	universe_players = g_slist_append(universe_players, player);
+	world_players = g_slist_append(world_players, player);
 
 	// call client and tell them to associate the new player
 	// with their own player object
 
-	client_universe = irmo_client_get_universe(client);
+	client_world = irmo_client_get_world(client);
 
-	irmo_universe_method_call(client_universe, "assoc_player",
+	irmo_world_method_call(client_world, "assoc_player",
 				  irmo_object_get_id(object),
 				  irmo_object_get_id(playerobj));
 
@@ -97,10 +97,10 @@ static void new_player(IrmoObject *object, IrmoClient *client)
 
 static void on_connect(IrmoClient *client, gpointer user_data)
 {
-	IrmoUniverse *client_universe 
-		= irmo_client_get_universe(client);
+	IrmoWorld *client_world 
+		= irmo_client_get_world(client);
 
-	irmo_universe_watch_new(client_universe, "Player",
+	irmo_world_watch_new(client_world, "Player",
 				(IrmoObjCallback) new_player, client);
 }
 
@@ -132,7 +132,7 @@ void server_init()
 		}
 	}
 
-	server = irmo_server_new(sock, NULL, universe, client_spec);
+	server = irmo_server_new(sock, NULL, world, client_spec);
 
 	if (!server) {
 		fprintf(stderr, "server_init: Unable to create server\n");
@@ -148,6 +148,9 @@ void server_run()
 }
 
 // $Log$
+// Revision 1.4  2003/09/01 14:35:51  fraggle
+// Rename Universe -> World
+//
 // Revision 1.3  2003/08/26 14:58:17  fraggle
 // Stop using AF_* in irmoroids.
 //

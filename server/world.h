@@ -53,19 +53,22 @@ struct _AstroPlayer {
 	AstroObject *avatar;		// their ship
 };
 
-extern IrmoUniverse *universe;
-extern GSList *universe_players;
-extern GSList *universe_objects;
+extern IrmoWorld *world;
+extern GSList *world_players;
+extern GSList *world_objects;
 
-void universe_init();
-AstroObject *universe_object_new(int x, int y, int angle);
-AstroObject *universe_new_rock(int x, int y, float scale);
+void world_init();
+AstroObject *world_object_new(int x, int y, int angle);
+AstroObject *world_new_rock(int x, int y, float scale);
 
 #endif /* #ifndef ASTRO_TYPES_H */
 
 // $Log$
-// Revision 1.1  2003/06/09 21:34:37  fraggle
-// Initial revision
+// Revision 1.1  2003/09/01 14:35:51  fraggle
+// Rename Universe -> World
+//
+// Revision 1.1.1.1  2003/06/09 21:34:37  fraggle
+// Initial sourceforge import
 //
 // Revision 1.3  2003/06/09 21:14:09  sdh300
 // Add Id tag and copyright notice
