@@ -30,6 +30,11 @@
 
 SDL_Surface *screen;
 
+void gfx_shutdown(void)
+{
+	SDL_Quit();
+}
+
 void gfx_init()
 {
 	SDL_Init(SDL_INIT_VIDEO);
@@ -52,6 +57,8 @@ void gfx_init()
 	glVertex2f(0, 0.5);
 
 	glEnd();
+
+	atexit(gfx_shutdown);
 }
 
 void gfx_draw_circle(int res)
@@ -86,6 +93,9 @@ void gfx_update()
 }
 
 // $Log$
+// Revision 1.4  2003/09/03 03:13:09  fraggle
+// Shut down graphics at exit
+//
 // Revision 1.3  2003/09/02 18:53:56  fraggle
 // Use translucency for explosions.
 //
