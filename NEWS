@@ -1,4 +1,11 @@
+
+	* Bugfixes.
+	* IPv6 support
+	* Rocks exploding now give a pretty red circle explosion effect.
+	* Ruby-based mirroring relay server
+	* Screen rotate turned off by default
+
 v1.0.0
 
-Initial release.
+	* Initial release.
 
