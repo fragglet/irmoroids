@@ -29,7 +29,7 @@ class Object {
 }
 
 class PlayerObject : Object {
-	irmo_objid_t player;
+	IrmoObjectID player;
 }
 
 class Explosion : Object {
@@ -42,12 +42,15 @@ class Asteroid : Object {}
 class Player {
 	string name;
 	int16 score;
-	irmo_objid_t avatar;
+	IrmoObjectID avatar;
 }
 
-method fire(irmo_objid_t player);
+method fire(IrmoObjectID player);
 
 // $Log$
+// Revision 1.3  2003/11/17 01:43:21  fraggle
+// Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
+//
 // Revision 1.2  2003/09/02 20:59:36  fraggle
 // Use subclassing in irmoroids: select the model to be used by the
 // class, not a model number

@@ -22,6 +22,9 @@
 #include <GL/gl.h>
 #include <SDL.h>
 
+#include <irmo.h>
+#include <glib.h>
+
 #include "common/net.h"
 
 #include "models.h"
@@ -131,8 +134,8 @@ int main(int argc, char *argv[])
 
 	parse_cmd_line(argc, argv);
 
-	models_init();
 	gfx_init();
+	models_init();
 	net_connect(hostname);
 
 	printf("initted gfx\n");
@@ -188,6 +191,9 @@ int main(int argc, char *argv[])
 }
 
 // $Log$
+// Revision 1.7  2003/11/17 01:43:21  fraggle
+// Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
+//
 // Revision 1.6  2003/09/20 16:18:31  fraggle
 // Add ability to send messages to players
 //

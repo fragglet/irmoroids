@@ -19,11 +19,9 @@
 //
 //---------------------------------------------------------------------
 
-
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <GL/gl.h>
 #include <math.h>
-
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
@@ -37,26 +35,42 @@ void gfx_shutdown(void)
 
 void gfx_init()
 {
-	SDL_Init(SDL_INIT_VIDEO);
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+		fprintf(stderr, "cant init SDL: %s\n", SDL_GetError());
+		exit(-1);
+	}
+
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0,
-				  SDL_OPENGL|SDL_GL_DOUBLEBUFFER);
+				  SDL_OPENGL);
 
-	glClearDepth( 200.0f );
+	if (!screen) {
+		fprintf(stderr, "Unable to initialise display: %s\n",
+				SDL_GetError());
+		exit(-1);
+	}
+
+	SDL_WM_SetCaption("Irmoroids", NULL);
+
+	glShadeModel(GL_SMOOTH);
+
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
+	glEnable(GL_CULL_FACE);
+
+	glClearDepth(200.0);
+	glClearColor(0, 0, 0, 0);
+	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glDepthFunc(GL_LEQUAL);
 	
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glBegin(GL_POLYGON);
-
-	glVertex2f(-0.5, -0.5);
-	glVertex2f(0.5, -0.5);
-	glVertex2f(0, 0.5);
-
-	glEnd();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 
 	atexit(gfx_shutdown);
 }
@@ -81,7 +95,6 @@ void gfx_draw_circle(int res)
 
 void gfx_clear()
 {
-	glClearDepth( 200.0f );
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
@@ -93,6 +106,9 @@ void gfx_update()
 }
 
 // $Log$
+// Revision 1.5  2003/11/17 01:43:21  fraggle
+// Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
+//
 // Revision 1.4  2003/09/03 03:13:09  fraggle
 // Shut down graphics at exit
 //

@@ -63,7 +63,7 @@ AstroPlayer *find_player(IrmoObject *needle)
 
 static void fire_callback(IrmoMethodData *data, gpointer user_data)
 {
-	irmo_objid_t id;
+	IrmoObjectID id;
 	IrmoObject *fireplayer;
 	AstroPlayer *player;
 	AstroObject *misl;
@@ -441,6 +441,9 @@ AstroObject *world_new_rock(int x, int y, float scale)
 }
 
 // $Log$
+// Revision 1.9  2003/11/17 01:43:21  fraggle
+// Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
+//
 // Revision 1.8  2003/09/13 16:12:21  fraggle
 // Fix int overflows
 //

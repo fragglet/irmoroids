@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <glib.h>
 #include <irmo.h>
 #include <GL/gl.h>
 #include <math.h>
@@ -94,7 +95,7 @@ void make_stars()
 
 void player_callback(IrmoMethodData *data, gpointer user_data)
 {
-	irmo_objid_t id = irmo_method_arg_int(data, "svobj");
+	IrmoObjectID id = irmo_method_arg_int(data, "svobj");
 
 	player = irmo_world_get_object_for_id(world, id);
 }
@@ -193,7 +194,7 @@ void net_run(void)
 
 void net_block(void)
 {
-	irmo_socket_block(irmo_connection_get_socket(connection), 50);
+	irmo_socket_block(irmo_connection_get_socket(connection), 20);
 }
 
 long long get_ms()
@@ -333,7 +334,7 @@ void net_render_stars()
 
 void net_render()
 {
-	irmo_objid_t avatar_id;
+	IrmoObjectID avatar_id;
 
 	if (player) {
 		avatar_id = irmo_object_get_int(player, "avatar");
@@ -369,6 +370,9 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.16  2003/11/17 01:43:21  fraggle
+// Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
+//
 // Revision 1.15  2003/09/20 16:18:31  fraggle
 // Add ability to send messages to players
 //
