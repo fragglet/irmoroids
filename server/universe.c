@@ -66,9 +66,10 @@ static void fire_callback(IrmoMethodData *data, gpointer user_data)
 	misl = universe_object_new(player->avatar->x, player->avatar->y,
 				   player->avatar->angle);
 
-
+	misl->type = OBJECT_MISSILE;
 	misl->dx = player->avatar->dx + 512 * cos(angle);
 	misl->dy = player->avatar->dy + 512 * sin(angle);
+	misl->size = 1024;
 	
 	irmo_object_set_int(misl->object, "model", MODEL_MISSILE1);
 }
@@ -108,16 +109,18 @@ AstroObject *universe_object_new(int x, int y, int angle)
 	if (!irmoobj)
 		return NULL;
 
-	irmo_object_set_int(irmoobj, "x", x);
-	irmo_object_set_int(irmoobj, "y", y);
-	irmo_object_set_int(irmoobj, "angle", angle);
-
 	obj = g_new0(AstroObject, 1);
 	obj->object = irmoobj;
 	obj->x = x;
 	obj->y = y;
 	obj->angle = angle;
+	obj->scale = 1.0;
 
+	irmo_object_set_int(irmoobj, "x", obj->x);
+	irmo_object_set_int(irmoobj, "y", obj->y);
+	irmo_object_set_int(irmoobj, "angle", obj->angle);
+	irmo_object_set_int(irmoobj, "scale", obj->scale * 256);
+	
 	universe_objects = g_slist_append(universe_objects, obj);
 
 	return obj;
@@ -132,6 +135,82 @@ void universe_object_destroy(AstroObject *obj)
 	free(obj);
 }
 
+static void rock_collision(AstroObject *rock1, AstroObject *rock2)
+{
+	int dx, dy;
+	
+	dx = rock1->dx; dy = rock1->dy;
+	rock1->dx = rock2->dx; rock1->dy = rock2->dy;
+	rock2->dx = dx; rock2->dy = dy;
+}
+
+static void missile_hit_rock(AstroObject *missile, AstroObject *target)
+{
+	int i;
+	
+	missile->destroyed = target->destroyed = TRUE;
+
+	if (target->scale <= 0.5)
+		return;
+	
+	for (i=0; i<4; ++i) {
+		AstroObject *rock;
+		int dx, dy;
+		int x, y;
+		
+		dx = 512 * cos(i * M_PI / 2);
+		dy = 512 * sin(i * M_PI / 2);
+		
+		x = target->x + 4 * target->scale * dx;
+		y = target->y + 4 * target->scale * dy;
+		
+		rock = universe_new_rock(x, y, 
+					 target->scale * 0.5);
+		
+		rock->dx = target->dx + dx;
+		rock->dy = target->dy + dy;
+	}
+}
+
+static gboolean do_collision(AstroObject *obj1, AstroObject *obj2)
+{
+	if (obj1->type == OBJECT_ROCK && obj2->type == OBJECT_ROCK) {
+		rock_collision(obj1, obj2);
+	} else if (obj1->type == OBJECT_ROCK
+		   && obj2->type == OBJECT_MISSILE) {
+		missile_hit_rock(obj2, obj1);
+	} else if (obj1->type == OBJECT_ROCK
+		   && obj2->type == OBJECT_SHIP) {
+		rock_collision(obj1, obj2);
+	} else {
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+static void run_collisions(AstroObject *obj1, AstroObject *obj2)
+{
+	double dx, dy;
+	double d;
+
+	if (obj1->destroyed || obj2->destroyed)
+		return;
+	
+	if (obj1 == obj2)
+		return;
+
+	dx = obj1->x - obj2->x;
+	dy = obj1->y - obj2->y;
+
+	d = sqrt(dx * dx + dy * dy);
+
+	if (d < obj1->size + obj2->size) {
+		if (!do_collision(obj1, obj2))
+			do_collision(obj2, obj1);
+	}
+}
+
 static void universe_run_objects(AstroObject *obj, gpointer user_data)
 {
 	if (obj->dx || obj->dy) {
@@ -143,6 +222,8 @@ static void universe_run_objects(AstroObject *obj, gpointer user_data)
 		irmo_object_set_int(obj->object, "x", obj->x);
 		irmo_object_set_int(obj->object, "y", obj->y);
 	}
+        g_slist_foreach(universe_objects,
+                        (GFunc) run_collisions, obj);
 }
 
 #define SPEED 1024
@@ -177,36 +258,63 @@ static void universe_run_players(AstroPlayer *player, gpointer user_data)
 	}		
 }
 
+// garbage collect destroyed objects
+
+static gint universe_run_gc_find(AstroObject *a, AstroObject *b)
+{
+	if (a->destroyed)
+		return 0;
+
+	return 1;
+}
+
+static void universe_run_gc()
+{
+	GSList *found;
+
+	while ((found = g_slist_find_custom(universe_objects, NULL,
+					    (GCompareFunc)
+					    universe_run_gc_find))) {
+		AstroObject *obj
+			= (AstroObject *) g_slist_nth_data(found, 0);
+
+		universe_object_destroy(obj);
+	}
+}
+
 void universe_run()
 {
 	g_slist_foreach(universe_objects, 
 			(GFunc) universe_run_objects, NULL);
 	g_slist_foreach(universe_players,
 			(GFunc) universe_run_players, NULL);
+
+	universe_run_gc();	
 }
 
 #define ROCK_SPEED 512
 
 int misl = 0;
 
-AstroObject *universe_new_rock()
+AstroObject *universe_new_rock(int x, int y, float scale)
 {
 	AstroObject *obj;
-	int x, y;
+	
+	obj = universe_object_new(x, y, 0);
 
-	obj = universe_object_new(-1, -1, 0);
-
+	obj->type = OBJECT_ROCK;
 	obj->dx = (rand() % (ROCK_SPEED * 2)) - ROCK_SPEED;
 	obj->dy = (rand() % (ROCK_SPEED * 2)) - ROCK_SPEED;
-
-	if (!misl) {
-		irmo_object_set_int(obj->object, "model", MODEL_MISSILE1);
-		misl=1;
-	}else 
+	obj->size = 2500 * scale;
+	obj->scale = scale;
 	
+	irmo_object_set_int(obj->object, "scale", scale * 256);
 	irmo_object_set_int(obj->object, "model", MODEL_ROCK1);
 
 	return obj;
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
+// Initial import
+//

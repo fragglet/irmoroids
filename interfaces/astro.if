@@ -5,6 +5,7 @@ class Object {
 	int16 y;
 	int16 angle;
 	int8 model;
+	int16 scale;
 }
 
 class Player {
@@ -16,4 +17,7 @@ class Player {
 method fire(irmo_objid_t player);
 
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
+// Initial import
+//
 

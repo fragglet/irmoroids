@@ -43,6 +43,9 @@ static void new_player(IrmoObject *object, IrmoClient *client)
 		fprintf(stderr, "No more objects for player avatar!\n");
 		return;
 	}
+
+	avatar->type = OBJECT_SHIP;
+	avatar->size = 2300;
 	
 	irmo_object_set_int(avatar->object, "model", MODEL_SHIP1);
 	irmo_object_set_int(playerobj, "avatar",
@@ -114,3 +117,6 @@ void server_run()
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
+// Initial import
+//

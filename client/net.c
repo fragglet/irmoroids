@@ -179,6 +179,7 @@ static void net_render_foreach(IrmoObject *obj, gpointer user_data)
 {
 	GLfloat x, y;
 	GLfloat angle;
+	GLfloat scale;
 	int modelnum;
 
 	//if (obj == player_avatar)
@@ -200,6 +201,10 @@ static void net_render_foreach(IrmoObject *obj, gpointer user_data)
 		tumble_translation(obj);
 	else if (modelnum == MODEL_MISSILE1)
 		twist_translation(obj);
+
+	scale = irmo_object_get_int(obj, "scale") / 256.0;
+	
+	glScalef(scale, scale, scale);
 	
 	model_draw(modelnum);
 	glPopMatrix();
@@ -272,7 +277,7 @@ void net_render()
 		glTranslatef(-avatar_x, -avatar_y, 0);
 	}
 //	glScalef(1.0/0xffff, 1.0/0xffff, 1);
-	net_render_border();
+//	net_render_border();
 	net_render_stars();
 	
 	irmo_universe_foreach_object(universe, "Object",
@@ -280,3 +285,6 @@ void net_render()
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
+// Initial import
+//

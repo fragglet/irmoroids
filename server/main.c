@@ -24,8 +24,8 @@ int main(int argc, char *argv[])
 	universe_init();
 	server_init();
 
-	for (i=0; i<7; ++i)
-		universe_new_rock();
+	for (i=0; i<1; ++i)
+		universe_new_rock(-1, -1, 3);
 	
 	for (oldmovetime = get_ms();; ) {
 		long long nowtime = get_ms();
@@ -41,3 +41,6 @@ int main(int argc, char *argv[])
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
+// Initial import
+//
