@@ -115,6 +115,10 @@ class MirrorServer
 		@conn.disconnect
 	end
 
+	def block
+		Irmo::Socket.block([@conn.socket, @socket], 100)
+	end
+
 	def run
 		@conn.run
 		@socket.run
@@ -153,6 +157,7 @@ puts "server started"
 
 begin
 	loop do
+		server.block
 		server.run
 	end
 ensure
@@ -161,6 +166,9 @@ ensure
 end
 
 # $Log$
+# Revision 1.3  2003/09/01 19:29:12  fraggle
+# Use the new blocking functions
+#
 # Revision 1.2  2003/09/01 18:05:16  fraggle
 # Use a struct instead of a hashtable. Add some comments
 #

@@ -25,6 +25,8 @@
 #include <irmo.h>
 
 void net_connect(char *host);
+void net_run(void);
+void net_block(void);
 
 extern IrmoConnection *connection;
 extern IrmoWorld *world;
@@ -43,6 +45,9 @@ extern int net_limit;
 #endif /* #ifndef ASTRO_NET_H */
 
 // $Log$
+// Revision 1.3  2003/09/01 19:29:12  fraggle
+// Use the new blocking functions
+//
 // Revision 1.2  2003/09/01 14:35:51  fraggle
 // Rename Universe -> World
 //

@@ -168,9 +168,14 @@ void net_disconnect()
 	irmo_connection_unref(connection);
 }
 
-void net_run()
+void net_run(void)
 {
 	irmo_connection_run(connection);
+}
+
+void net_block(void)
+{
+	irmo_socket_block(irmo_connection_get_socket(connection), 100);
 }
 
 int shown = 0;
@@ -319,6 +324,9 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.5  2003/09/01 19:29:12  fraggle
+// Use the new blocking functions
+//
 // Revision 1.4  2003/09/01 14:35:51  fraggle
 // Rename Universe -> World
 //
