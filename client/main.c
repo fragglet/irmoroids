@@ -1,3 +1,24 @@
+// Emacs style mode select -*- C++ -*-
+//---------------------------------------------------------------------
+//
+// $Id: main.c,v 1.4 2003-06-09 21:14:02 sdh300 Exp $
+//
+// Copyright (C) 2002-2003 University of Southampton
+// Copyright (C) 2003 Simon Howard
+//
+// This program is free software; you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the
+// Free Software Foundation; either version 2 of the License, or (at your
+// option) any later version. This program is distributed in the hope that
+// it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+// warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+// the GNU General Public License for more details. You should have
+// received a copy of the GNU General Public License along with this
+// program; if not, write to the Free Software Foundation, Inc., 59 Temple
+// Place - Suite 330, Boston, MA 02111-1307, USA.
+//
+//---------------------------------------------------------------------
+
 #include <GL/gl.h>
 #include <SDL.h>
 
@@ -167,6 +188,9 @@ int main(int argc, char *argv[])
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.3  2003/05/21 01:51:59  sdh300
+// Add command line options for demo
+//
 // Revision 1.2  2003/04/21 19:18:02  sdh300
 // Fix 1st-person mode
 //
