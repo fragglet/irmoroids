@@ -27,6 +27,9 @@
 require 'irmo'
 
 class MirrorServer
+
+	@@Translation = Struct.new('Translation', :client, :obj)
+
 	def initialize(type, host, port, remote_ifspec, local_ifspec)
 		@local_world = Irmo::World.new(local_ifspec)
 		@conn = Irmo::connect(type, host, port, remote_ifspec,
@@ -40,7 +43,16 @@ class MirrorServer
 		@socket = Irmo::Socket.new(type, port)
 		@server = @socket.new_server(nil, @conn.world, local_ifspec)
 
+		# hash table for each object in @local_world => client objects
+		#
+		# s2cobj[obj].client => client which created this object
+		# s2cobj[obj].obj    => original client object
+
 		@s2cobj = {}
+
+		# hash table for translating client objects to server objects
+		# c2sobj[client][obj.id] => serverobj
+
 		@c2sobj = {}
 
 		@server.watch_connect do |cl|
@@ -52,11 +64,8 @@ class MirrorServer
 
 		# delete all the copied objects
 
-		puts "disconnect"
-
 		@c2sobj[cl].each_value do |obj|
 			@s2cobj.delete(obj.id)
-			puts "delete #{obj.get_class},#{obj.id}"
 			obj.destroy
 		end
 
@@ -75,7 +84,7 @@ class MirrorServer
 			obj2 = @local_world.new_object(obj.get_class)
 
 			c2sobj[obj.id] = obj2
-			@s2cobj[obj2.id] = { 'obj' => obj, 'client' => cl }
+			@s2cobj[obj2.id] = Translation.new(cl, obj)
 		end
 
 		cl.world.watch do |obj,var|
@@ -130,9 +139,9 @@ class IrmoroidsMirrorServer < MirrorServer
 
 			translation = @s2cobj[clobj]
 
-			world = translation['client'].world
+			world = translation.client.world
 
-			world.assoc_player(translation['obj'].id, svobj)
+			world.assoc_player(translation.obj.id, svobj)
 					
 		end
 	end
@@ -152,6 +161,9 @@ ensure
 end
 
 # $Log$
+# Revision 1.2  2003/09/01 18:05:16  fraggle
+# Use a struct instead of a hashtable. Add some comments
+#
 # Revision 1.1  2003/09/01 17:07:39  fraggle
 # Irmoroids mirroring server
 #
