@@ -1,4 +1,6 @@
 
+v1.1.0
+
 	* Bugfixes.
 	* IPv6 support
 	* Rocks exploding now give a pretty red circle explosion effect.
