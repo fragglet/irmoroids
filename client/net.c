@@ -26,9 +26,9 @@
 #include <math.h>
 
 #include "common/config.h"
-#include "common/models.h"
 #include "common/net.h"
 
+#include "models.h"
 #include "net.h"
 
 #define NUM_STARS 1024
@@ -216,6 +216,22 @@ static void twist_translation(IrmoObject *obj)
 	glRotatef(t, 0, 1, 0);
 }
 
+static int get_object_modelnum(IrmoObject *obj)
+{
+	char *classname = irmo_object_get_class(obj);
+
+	if (!strcmp(classname, "PlayerObject"))
+		return MODEL_SHIP1;
+	else if (!strcmp(classname, "Asteroid"))
+		return MODEL_ROCK1;
+	else if (!strcmp(classname, "Missile"))
+		return MODEL_MISSILE1;
+	else if (!strcmp(classname, "Explosion"))
+		return MODEL_EXPLOSION;
+	else
+		return MODEL_NONE;
+}
+
 static void net_render_foreach(IrmoObject *obj, gpointer user_data)
 {
 	GLfloat x, y;
@@ -232,7 +248,8 @@ static void net_render_foreach(IrmoObject *obj, gpointer user_data)
 	point_normalise(&x, &y);
 	
 	angle = angle_translate(irmo_object_get_int(obj, "angle"));
-	modelnum = irmo_object_get_int(obj, "model");
+
+	modelnum = get_object_modelnum(obj);
 
 	glPushMatrix();
 	glTranslatef(x, y, 0);
@@ -248,8 +265,15 @@ static void net_render_foreach(IrmoObject *obj, gpointer user_data)
 	glScalef(scale, scale, scale);
 	
 	if (modelnum == MODEL_EXPLOSION) {
-		int points = 40 * scale;
-		glColor4f(0.7, 0, 0, 0.5/scale);
+		int points;
+		GLfloat scale2;
+
+		scale2 = exp(irmo_object_get_int(obj, "time") / 5.0);
+
+		glScalef(scale2, scale2, scale2);
+		points = 40 * scale * scale2;
+
+		glColor4f(0.7, 0, 0, 1 /scale2);
 		gfx_draw_circle(points);
 	} else {
 		model_draw(modelnum);
@@ -331,6 +355,10 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.10  2003/09/02 20:59:36  fraggle
+// Use subclassing in irmoroids: select the model to be used by the
+// class, not a model number
+//
 // Revision 1.9  2003/09/02 18:53:57  fraggle
 // Use translucency for explosions.
 //

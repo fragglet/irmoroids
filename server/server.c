@@ -24,7 +24,6 @@
 #include <stdlib.h>
 
 #include "common/config.h"
-#include "common/models.h"
 #include "common/net.h"
 #include "world.h"
 
@@ -63,7 +62,7 @@ static void new_player(IrmoObject *object, AstroClient *client)
 		return;
 	}
 
-	avatar = world_object_new(-1, -1, 4096);
+	avatar = world_object_new("PlayerObject", -1, -1, 4096);
 
 	if (!avatar) {
 		fprintf(stderr, "No more objects for player avatar!\n");
@@ -73,9 +72,10 @@ static void new_player(IrmoObject *object, AstroClient *client)
 	avatar->type = OBJECT_SHIP;
 	avatar->size = 1200;
 	
-	irmo_object_set_int(avatar->object, "model", MODEL_SHIP1);
 	irmo_object_set_int(playerobj, "avatar",
 			    irmo_object_get_id(avatar->object));
+	irmo_object_set_int(avatar->object, "player", 
+			    irmo_object_get_id(playerobj));
 	
 	player = g_new0(AstroPlayer, 1);
 
@@ -171,6 +171,10 @@ void server_run()
 }
 
 // $Log$
+// Revision 1.8  2003/09/02 20:59:36  fraggle
+// Use subclassing in irmoroids: select the model to be used by the
+// class, not a model number
+//
 // Revision 1.7  2003/09/02 15:49:30  fraggle
 // Make objects smaller in scale (increase arena size)
 //

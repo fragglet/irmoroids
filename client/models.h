@@ -22,13 +22,26 @@
 #ifndef ASTRO_MODELS_H
 #define ASTRO_MODELS_H
 
+enum {
+	MODEL_NONE,
+	MODEL_SHIP1,
+	MODEL_ROCK1,
+	MODEL_MISSILE1,
+	MODEL_EXPLOSION,                // "virtual" model
+	NUM_MODELS
+};
+ 
 void models_init();
 
 #endif /* #ifndef ASTRO_MODELS_H */
 
 // $Log$
-// Revision 1.1  2003/06/09 21:34:36  fraggle
-// Initial revision
+// Revision 1.2  2003/09/02 20:59:36  fraggle
+// Use subclassing in irmoroids: select the model to be used by the
+// class, not a model number
+//
+// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
+// Initial sourceforge import
 //
 // Revision 1.2  2003/06/09 21:14:03  sdh300
 // Add Id tag and copyright notice

@@ -28,9 +28,10 @@
 #include <irmo/method.h>
 
 #include "common/config.h"
-#include "common/models.h"
 #include "common/net.h"
 #include "world.h"
+
+#define EXPLOSION_TIME 10
 
 static gboolean collision_occurred;
 
@@ -85,16 +86,16 @@ static void fire_callback(IrmoMethodData *data, gpointer user_data)
 
 	angle = (player->avatar->angle * M_PI * 2) / 0xffff;
 	
-	misl = world_object_new(player->avatar->x, player->avatar->y,
-				   player->avatar->angle);
+	misl = world_object_new("Missile", 
+				player->avatar->x, 
+				player->avatar->y,
+				player->avatar->angle);
 
 	misl->type = OBJECT_MISSILE;
 	misl->dx = player->avatar->dx + 512 * cos(angle);
 	misl->dy = player->avatar->dy + 512 * sin(angle);
 	misl->size = 512;
 	misl->missile_life = 40;
-	
-	irmo_object_set_int(misl->object, "model", MODEL_MISSILE1);
 }
 
 void world_init()
@@ -115,7 +116,7 @@ void world_init()
 	irmo_world_method_watch(world, "fire", fire_callback, NULL);
 }
 
-AstroObject *world_object_new(int x, int y, int angle)
+AstroObject *world_object_new(char *classname, int x, int y, int angle)
 {
 	IrmoObject *irmoobj;
 	AstroObject *obj;
@@ -127,7 +128,7 @@ AstroObject *world_object_new(int x, int y, int angle)
 		y = rand() & 0xffff;
 	}
 
-	irmoobj = irmo_object_new(world, "Object");
+	irmoobj = irmo_object_new(world, classname);
 
 	if (!irmoobj)
 		return NULL;
@@ -180,7 +181,7 @@ static void missile_hit_rock(AstroObject *missile, AstroObject *target)
 	
 	missile->destroyed = target->destroyed = TRUE;
 
-	world_new_explosion(target, 10);
+	world_new_explosion(target);
 
 	if (target->scale <= 0.5)
 		return;
@@ -252,11 +253,6 @@ static void run_collisions(AstroObject *obj1, AstroObject *obj2)
 
 static void world_run_objects(AstroObject *obj, gpointer user_data)
 {
-	if (obj->type == OBJECT_EXPLOSION) {
-		obj->scale *= 1.1;
-		irmo_object_set_int(obj->object, "scale", obj->scale * 256);
-	}
-
 	if (obj->missile_life) {
 		--obj->missile_life;
 
@@ -267,8 +263,12 @@ static void world_run_objects(AstroObject *obj, gpointer user_data)
 
 			if (obj->type == OBJECT_MISSILE) {
 				AstroObject *explosion = 
-					world_new_explosion(obj, 4);
+					world_new_explosion(obj);
 			}
+		}
+		if (obj->type == OBJECT_EXPLOSION) {
+			irmo_object_set_int(obj->object, "time", 
+					    EXPLOSION_TIME-obj->missile_life);
 		}
 	}
 
@@ -365,20 +365,19 @@ void world_run()
 	world_run_gc();	
 }
 
-AstroObject *world_new_explosion(AstroObject *parent, int life)
+AstroObject *world_new_explosion(AstroObject *parent)
 {
 	AstroObject *obj;
 
-	obj = world_object_new(parent->x, parent->y, 0);
+	obj = world_object_new("Explosion", parent->x, parent->y, 0);
 	obj->type = OBJECT_EXPLOSION;
 	obj->dx = parent->dx;
 	obj->dy = parent->dy;
 	obj->size = 1200 * parent->scale;
-	obj->scale = parent->scale;
-	obj->missile_life = life;
+	obj->scale = parent->scale * 0.6;
+	obj->missile_life = EXPLOSION_TIME;
 
 	irmo_object_set_int(obj->object, "scale", obj->scale * 256);
-	irmo_object_set_int(obj->object, "model", MODEL_EXPLOSION);
 
 	return obj;
 }
@@ -391,7 +390,7 @@ AstroObject *world_new_rock(int x, int y, float scale)
 {
 	AstroObject *obj;
 	
-	obj = world_object_new(x, y, 0);
+	obj = world_object_new("Asteroid", x, y, 0);
 
 	obj->type = OBJECT_ROCK;
 	obj->dx = (rand() % (ROCK_SPEED * 2)) - ROCK_SPEED;
@@ -400,12 +399,15 @@ AstroObject *world_new_rock(int x, int y, float scale)
 	obj->scale = scale;
 	
 	irmo_object_set_int(obj->object, "scale", scale * 256);
-	irmo_object_set_int(obj->object, "model", MODEL_ROCK1);
 
 	return obj;
 }
 
 // $Log$
+// Revision 1.6  2003/09/02 20:59:36  fraggle
+// Use subclassing in irmoroids: select the model to be used by the
+// class, not a model number
+//
 // Revision 1.5  2003/09/02 16:54:32  fraggle
 // Add explosions
 //

@@ -23,7 +23,6 @@
 #define ASTRO_TYPES_H
 
 typedef struct _AstroObject AstroObject;
-typedef struct _AstroModel AstroModel;
 typedef struct _AstroPlayer AstroPlayer;
 typedef struct _AstroClient AstroClient;
 
@@ -66,13 +65,17 @@ extern GSList *world_players;
 extern GSList *world_objects;
 
 void world_init();
-AstroObject *world_object_new(int x, int y, int angle);
-AstroObject *world_new_explosion(AstroObject *parent, int life);
+AstroObject *world_object_new(char *classname, int x, int y, int angle);
+AstroObject *world_new_explosion(AstroObject *parent);
 AstroObject *world_new_rock(int x, int y, float scale);
 
 #endif /* #ifndef ASTRO_TYPES_H */
 
 // $Log$
+// Revision 1.5  2003/09/02 20:59:36  fraggle
+// Use subclassing in irmoroids: select the model to be used by the
+// class, not a model number
+//
 // Revision 1.4  2003/09/02 16:54:32  fraggle
 // Add explosions
 //

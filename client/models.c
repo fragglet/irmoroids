@@ -26,7 +26,6 @@
 #include <GL/gl.h>
 
 #include "common/config.h"
-#include "common/models.h"
 
 #include "mesh.h"
 #include "models.h"
@@ -100,6 +99,10 @@ void model_draw(int modelnum)
 }
 
 // $Log$
+// Revision 1.3  2003/09/02 20:59:36  fraggle
+// Use subclassing in irmoroids: select the model to be used by the
+// class, not a model number
+//
 // Revision 1.2  2003/09/02 18:53:57  fraggle
 // Use translucency for explosions.
 //

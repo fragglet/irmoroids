@@ -22,7 +22,6 @@
 #include <GL/gl.h>
 #include <SDL.h>
 
-#include "common/models.h"
 #include "common/net.h"
 
 #include "models.h"
@@ -189,6 +188,10 @@ int main(int argc, char *argv[])
 }
 
 // $Log$
+// Revision 1.5  2003/09/02 20:59:36  fraggle
+// Use subclassing in irmoroids: select the model to be used by the
+// class, not a model number
+//
 // Revision 1.4  2003/09/02 15:49:30  fraggle
 // Make objects smaller in scale (increase arena size)
 //
