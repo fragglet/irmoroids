@@ -138,6 +138,7 @@ AstroObject *world_object_new(int x, int y, int angle)
 	obj->y = y;
 	obj->angle = angle;
 	obj->scale = 1.0;
+	obj->missile_life = 0;
 
 	irmo_object_set_int(irmoobj, "x", obj->x);
 	irmo_object_set_int(irmoobj, "y", obj->y);
@@ -178,6 +179,8 @@ static void missile_hit_rock(AstroObject *missile, AstroObject *target)
 	int i;
 	
 	missile->destroyed = target->destroyed = TRUE;
+
+	world_new_explosion(target, 10);
 
 	if (target->scale <= 0.5)
 		return;
@@ -249,11 +252,24 @@ static void run_collisions(AstroObject *obj1, AstroObject *obj2)
 
 static void world_run_objects(AstroObject *obj, gpointer user_data)
 {
-	if (obj->type == OBJECT_MISSILE) {
+	if (obj->type == OBJECT_EXPLOSION) {
+		obj->scale *= 1.1;
+		irmo_object_set_int(obj->object, "scale", obj->scale * 256);
+	}
+
+	if (obj->missile_life) {
 		--obj->missile_life;
 
-		if (obj->missile_life <= 0)
+		if (obj->missile_life <= 0) {
 			obj->destroyed = TRUE;
+
+			// if this is a missile, make it explode
+
+			if (obj->type == OBJECT_MISSILE) {
+				AstroObject *explosion = 
+					world_new_explosion(obj, 4);
+			}
+		}
 	}
 
 	if (obj->dx || obj->dy) {
@@ -349,6 +365,24 @@ void world_run()
 	world_run_gc();	
 }
 
+AstroObject *world_new_explosion(AstroObject *parent, int life)
+{
+	AstroObject *obj;
+
+	obj = world_object_new(parent->x, parent->y, 0);
+	obj->type = OBJECT_EXPLOSION;
+	obj->dx = parent->dx;
+	obj->dy = parent->dy;
+	obj->size = 1200 * parent->scale;
+	obj->scale = parent->scale;
+	obj->missile_life = life;
+
+	irmo_object_set_int(obj->object, "scale", obj->scale * 256);
+	irmo_object_set_int(obj->object, "model", MODEL_EXPLOSION);
+
+	return obj;
+}
+
 #define ROCK_SPEED 512
 
 int misl = 0;
@@ -372,6 +406,9 @@ AstroObject *world_new_rock(int x, int y, float scale)
 }
 
 // $Log$
+// Revision 1.5  2003/09/02 16:54:32  fraggle
+// Add explosions
+//
 // Revision 1.4  2003/09/02 15:49:30  fraggle
 // Make objects smaller in scale (increase arena size)
 //

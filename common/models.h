@@ -27,14 +27,18 @@ enum {
 	MODEL_SHIP1,
 	MODEL_ROCK1,
 	MODEL_MISSILE1,
+	MODEL_EXPLOSION,		// "virtual" model
 	NUM_MODELS
 };
 
 #endif
 
 // $Log$
-// Revision 1.1  2003/06/09 21:34:36  fraggle
-// Initial revision
+// Revision 1.2  2003/09/02 16:54:32  fraggle
+// Add explosions
+//
+// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
+// Initial sourceforge import
 //
 // Revision 1.2  2003/06/09 21:14:05  sdh300
 // Add Id tag and copyright notice

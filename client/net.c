@@ -213,6 +213,8 @@ static void twist_translation(IrmoObject *obj)
 {
 	long long t = get_object_time(obj);
 
+	printf("%i\n", t);
+
 	glRotatef(t, 0, 1, 0);
 }
 
@@ -247,7 +249,14 @@ static void net_render_foreach(IrmoObject *obj, gpointer user_data)
 	
 	glScalef(scale, scale, scale);
 	
-	model_draw(modelnum);
+	if (modelnum == MODEL_EXPLOSION) {
+		int points = 40 * scale;
+		glColor3f(0.4/scale, 0, 0);
+		gfx_draw_circle(points);
+	} else {
+		model_draw(modelnum);
+	}
+
 	glPopMatrix();
 }
 
@@ -324,6 +333,9 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.8  2003/09/02 16:54:31  fraggle
+// Add explosions
+//
 // Revision 1.7  2003/09/02 15:49:30  fraggle
 // Make objects smaller in scale (increase arena size)
 //

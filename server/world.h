@@ -34,6 +34,7 @@ typedef enum {
 	OBJECT_ROCK,
 	OBJECT_SHIP,
 	OBJECT_MISSILE,
+	OBJECT_EXPLOSION,
 } AstroObjectType;
 
 struct _AstroObject {
@@ -66,11 +67,15 @@ extern GSList *world_objects;
 
 void world_init();
 AstroObject *world_object_new(int x, int y, int angle);
+AstroObject *world_new_explosion(AstroObject *parent, int life);
 AstroObject *world_new_rock(int x, int y, float scale);
 
 #endif /* #ifndef ASTRO_TYPES_H */
 
 // $Log$
+// Revision 1.4  2003/09/02 16:54:32  fraggle
+// Add explosions
+//
 // Revision 1.3  2003/09/02 15:32:53  fraggle
 // Limited life on missiles
 //

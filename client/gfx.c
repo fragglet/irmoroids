@@ -22,6 +22,8 @@
 
 #include <SDL.h>
 #include <GL/gl.h>
+#include <math.h>
+
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
@@ -49,6 +51,24 @@ void gfx_init()
 	glEnd();
 }
 
+void gfx_draw_circle(int res)
+{
+	int i;
+
+	if (res < 4)
+		res = 4;
+
+	glBegin(GL_POLYGON);
+
+	for (i=0; i<res; ++i) {
+		GLfloat angle = (2 * M_PI * i) / res;
+
+		glVertex2f(cos(angle), sin(angle));
+	}
+
+	glEnd();
+}
+
 void gfx_clear()
 {
 	glClearDepth( 200.0f );
@@ -63,8 +83,11 @@ void gfx_update()
 }
 
 // $Log$
-// Revision 1.1  2003/06/09 21:34:35  fraggle
-// Initial revision
+// Revision 1.2  2003/09/02 16:54:31  fraggle
+// Add explosions
+//
+// Revision 1.1.1.1  2003/06/09 21:34:35  fraggle
+// Initial sourceforge import
 //
 // Revision 1.2  2003/06/09 21:14:02  sdh300
 // Add Id tag and copyright notice
