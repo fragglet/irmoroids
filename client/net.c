@@ -109,8 +109,8 @@ void all_object_callback(IrmoObject *object, gchar *varname, gpointer user_data)
 
 static void net_disconnected(IrmoConnection *conn, gpointer user_data)
 {
-	puts("disconnected by server");
-	exit(-1);
+	puts("disconnected from server");
+	exit(0);
 }
 
 void net_connect(char *host)
@@ -359,6 +359,9 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.14  2003/09/12 17:31:27  fraggle
+// Slight change to disconnect message
+//
 // Revision 1.13  2003/09/12 17:18:29  fraggle
 // Shut up the compiler
 //
