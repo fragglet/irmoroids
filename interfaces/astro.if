@@ -22,8 +22,7 @@
 // Irmo interface specification file for astro
 
 class Object {
-	int16 x;
-	int16 y;
+	int16 x, y;
 	int16 angle;
 	int16 scale;
 }
@@ -48,6 +47,9 @@ class Player {
 method fire(IrmoObjectID player);
 
 // $Log$
+// Revision 1.4  2003/12/30 03:50:02  fraggle
+// Use new comma-separated syntax for interface files
+//
 // Revision 1.3  2003/11/17 01:43:21  fraggle
 // Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
 //
