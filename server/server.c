@@ -90,6 +90,8 @@ static void new_player(IrmoObject *object, IrmoClient *client)
 				  irmo_object_get_id(object),
 				  irmo_object_get_id(playerobj));
 
+	irmo_object_watch_destroy(object, (IrmoObjCallback) destroy_player,
+				  player);
 	irmo_client_watch_disconnect(client, 
 				(IrmoClientCallback) destroy_player, 
 				player);
@@ -148,6 +150,10 @@ void server_run()
 }
 
 // $Log$
+// Revision 1.5  2003/09/01 17:04:32  fraggle
+// destroy players when the client player object is destroyed as well
+// as when the client disconnects
+//
 // Revision 1.4  2003/09/01 14:35:51  fraggle
 // Rename Universe -> World
 //
