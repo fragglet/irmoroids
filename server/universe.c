@@ -11,6 +11,8 @@
 #include "common/net.h"
 #include "universe.h"
 
+static gboolean collision_occurred;
+
 IrmoUniverse *universe;
 GSList *universe_objects = NULL;
 GSList *universe_players = NULL;
@@ -137,11 +139,17 @@ void universe_object_destroy(AstroObject *obj)
 
 static void rock_collision(AstroObject *rock1, AstroObject *rock2)
 {
-	int dx, dy;
-	
-	dx = rock1->dx; dy = rock1->dy;
-	rock1->dx = rock2->dx; rock1->dy = rock2->dy;
-	rock2->dx = dx; rock2->dy = dy;
+	float momx1, momx2, momy1, momy2;
+
+	momx1 = rock1->dx * rock1->size;
+	momy1 = rock1->dy * rock1->size;
+	momx2 = rock2->dx * rock2->size;
+	momy2 = rock2->dy * rock2->size;
+
+	rock1->dx = momx2 / rock1->size;
+	rock1->dy = momy2 / rock1->size;
+	rock2->dx = momx1 / rock2->size;
+	rock2->dy = momy1 / rock2->size;
 }
 
 static void missile_hit_rock(AstroObject *missile, AstroObject *target)
@@ -186,6 +194,8 @@ static gboolean do_collision(AstroObject *obj1, AstroObject *obj2)
 		return FALSE;
 	}
 
+	collision_occurred = TRUE;
+
 	return TRUE;
 }
 
@@ -194,6 +204,11 @@ static void run_collisions(AstroObject *obj1, AstroObject *obj2)
 	double dx, dy;
 	double d;
 
+	// only 1 collision allowed
+	
+	if (collision_occurred)
+		return;
+	
 	if (obj1->destroyed || obj2->destroyed)
 		return;
 	
@@ -214,16 +229,31 @@ static void run_collisions(AstroObject *obj1, AstroObject *obj2)
 static void universe_run_objects(AstroObject *obj, gpointer user_data)
 {
 	if (obj->dx || obj->dy) {
+		int oldx=obj->x, oldy=obj->y;
+	
 		obj->x += obj->dx;
 		obj->y += obj->dy;
 		obj->x &= 0xffff;
 		obj->y &= 0xffff;
+
+		// check for collisions
+		// if a collision occurs, we reset back to the old
+		// position, as moving here would mean the objects
+		// which collided would be inside each other.
 		
-		irmo_object_set_int(obj->object, "x", obj->x);
-		irmo_object_set_int(obj->object, "y", obj->y);
+		collision_occurred = FALSE;
+
+		g_slist_foreach(universe_objects,
+				(GFunc) run_collisions, obj);
+
+		if (collision_occurred) {
+			obj->x = oldx;
+			obj->y = oldy;
+		} else {
+			irmo_object_set_int(obj->object, "x", obj->x);
+			irmo_object_set_int(obj->object, "y", obj->y);
+		}
 	}
-        g_slist_foreach(universe_objects,
-                        (GFunc) run_collisions, obj);
 }
 
 #define SPEED 1024
@@ -315,6 +345,11 @@ AstroObject *universe_new_rock(int x, int y, float scale)
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.2  2003/03/22 23:17:53  sdh300
+// Collisions between objects
+// Rocks explode into smaller rocks
+// Scaling of world objects
+//
 // Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
 // Initial import
 //
