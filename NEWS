@@ -1,4 +1,9 @@
 
+	* Internal API to send messages to players; players are given
+	  a welcome message when they connect
+	* Some bug fixes; OpenGL works properly where it was broken in
+	  a few places before.
+
 v1.1.0
 
 	* Bugfixes.
