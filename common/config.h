@@ -1,7 +1,7 @@
 // Emacs style mode select -*- C++ -*-
 //---------------------------------------------------------------------
 //
-// $Id: config.h,v 1.3 2003-06-09 21:14:05 sdh300 Exp $
+// $Id$
 //
 // Copyright (C) 2002-2003 University of Southampton
 // Copyright (C) 2003 Simon Howard
@@ -30,7 +30,13 @@
 
 #endif /* #ifndef COMMON_CONFIG_H */
 
-// $Log: not supported by cvs2svn $
+// $Log$
+// Revision 1.1  2003/06/09 21:34:36  fraggle
+// Initial revision
+//
+// Revision 1.3  2003/06/09 21:14:05  sdh300
+// Add Id tag and copyright notice
+//
 // Revision 1.2  2003/05/20 16:36:51  sdh300
 // Autoconfise
 //

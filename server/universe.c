@@ -1,7 +1,7 @@
 // Emacs style mode select -*- C++ -*-
 //---------------------------------------------------------------------
 //
-// $Id: universe.c,v 1.5 2003-06-09 21:14:09 sdh300 Exp $
+// $Id$
 //
 // Copyright (C) 2002-2003 University of Southampton
 // Copyright (C) 2003 Simon Howard
@@ -363,7 +363,13 @@ AstroObject *universe_new_rock(int x, int y, float scale)
 	return obj;
 }
 
-// $Log: not supported by cvs2svn $
+// $Log$
+// Revision 1.1  2003/06/09 21:34:37  fraggle
+// Initial revision
+//
+// Revision 1.5  2003/06/09 21:14:09  sdh300
+// Add Id tag and copyright notice
+//
 // Revision 1.4  2003/04/21 18:59:07  sdh300
 // The models point in the wrong direction, requiring a 90 degree offset to
 // angles. Fix this in the client side, not the server side.

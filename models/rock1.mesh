@@ -23,5 +23,11 @@ poly rock {V5, V7, V4}
 poly rock {V5, V8, V7}
 poly rock {V6, V8, V5}
 
-# $Log: not supported by cvs2svn $
+# $Log$
+# Revision 1.1  2003/06/09 21:34:36  fraggle
+# Initial revision
+#
+# Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
+# Initial import
+#
 

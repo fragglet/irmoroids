@@ -1,7 +1,7 @@
 // Emacs style mode select -*- C++ -*-
 //---------------------------------------------------------------------
 //
-// $Id: net.c,v 1.9 2003-06-09 21:14:03 sdh300 Exp $
+// $Id$
 //
 // Copyright (C) 2002-2003 University of Southampton
 // Copyright (C) 2003 Simon Howard
@@ -308,7 +308,13 @@ void net_render()
 				     net_render_foreach, NULL);
 }
 
-// $Log: not supported by cvs2svn $
+// $Log$
+// Revision 1.1  2003/06/09 21:34:36  fraggle
+// Initial revision
+//
+// Revision 1.9  2003/06/09 21:14:03  sdh300
+// Add Id tag and copyright notice
+//
 // Revision 1.8  2003/05/21 01:52:00  sdh300
 // Add command line options for demo
 //
