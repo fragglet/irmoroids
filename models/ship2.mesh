@@ -1,0 +1,56 @@
+define SIDE1:	0.1
+define SIDE2:	0.2
+
+define BACK1: 	-0.3
+define BACK2: 	-0.4
+define BACK3:	-0.5
+
+define FRONT1:	0.0
+define FRONT2:	0.5
+
+define HEIGHT:	0.3
+
+vertex TOP0: 	{-SIDE1, BACK2, HEIGHT}
+vertex TOP1: 	{SIDE1, BACK2, HEIGHT}
+vertex TOP2: 	{SIDE1, FRONT1, HEIGHT}
+vertex TOP3: 	{-SIDE1, FRONT1, HEIGHT}
+
+vertex BOTTOM0:	{-SIDE1, BACK2, -HEIGHT}
+vertex BOTTOM1:	{SIDE1, BACK2, -HEIGHT}
+vertex BOTTOM2:	{SIDE1, FRONT1, -HEIGHT}
+vertex BOTTOM3:	{-SIDE1, FRONT1, -HEIGHT}
+
+vertex LEFT0:	{-SIDE2, BACK3, 0}
+vertex LEFT1:	{-SIDE2, FRONT1, 0}
+
+vertex RIGHT0:	{SIDE2, BACK3, 0}
+vertex RIGHT1:	{SIDE2, FRONT1, 0}
+
+vertex ENGINE0: {-SIDE1, BACK1, 0}
+vertex ENGINE1: {SIDE1, BACK1, 0}
+
+vertex FRONTPT: {0, FRONT2, 0}
+
+color ship: {0.70, 0.70, 0.70}
+color red: {0.7, 0, 0}
+
+poly ship { TOP0, TOP1, TOP2, TOP3 }		# top
+poly ship { TOP0, TOP3, LEFT1, LEFT0 }		# left top
+poly ship { TOP1, RIGHT0, RIGHT1, TOP2 } 	# right top
+
+poly ship { BOTTOM0, BOTTOM3, BOTTOM2, BOTTOM1} 	# bottom
+poly ship { BOTTOM0, LEFT0, LEFT1, BOTTOM3 } 	# bottom left
+poly ship { BOTTOM1, BOTTOM2, RIGHT1, RIGHT0 }   # bottom right
+
+# front of ship
+
+poly red { TOP2, FRONTPT, TOP3 }
+poly red { TOP3, FRONTPT, LEFT1 }
+poly red { RIGHT1, FRONTPT, TOP2 }
+
+poly red { BOTTOM3, FRONTPT, BOTTOM2 }
+poly red { BOTTOM2, FRONTPT, RIGHT1 }
+poly red { BOTTOM3, FRONTPT, LEFT1 }
+
+# $Log: not supported by cvs2svn $
+

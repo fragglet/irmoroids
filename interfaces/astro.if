@@ -1,0 +1,19 @@
+// Irmo interface specification file for astro
+
+class Object {
+	int16 x;
+	int16 y;
+	int16 angle;
+	int8 model;
+}
+
+class Player {
+	string name;
+	int16 score;
+	irmo_objid_t avatar;
+}
+
+method fire(irmo_objid_t player);
+
+// $Log: not supported by cvs2svn $
+

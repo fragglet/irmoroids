@@ -1,0 +1,155 @@
+#include <GL/gl.h>
+#include <SDL.h>
+
+#include "common/models.h"
+#include "common/net.h"
+
+#include "models.h"
+#include "net.h"
+
+GLfloat main_light_position[]    = {5, 0.1, 0, 1};
+//{2.0, 0.0, -10.0, 1};
+GLfloat main_light_ambient[]     = {0.1, 0.1, 0.1, 1};
+GLfloat main_light_diffuse[]     = {0.5, 0.5, 0.5, 1};
+
+GLfloat material_ambient[]  = {0.15, 0.15, 0.15, 1};
+GLfloat material_diffuse[]  = {0.60, 0.60, 0.60, 1};
+
+static void run_sdl_keyup(SDL_Event *ev)
+{
+	switch (ev->key.keysym.sym) {
+	case SDLK_LEFT:
+		client_keystate &= ~KEY_LEFT;
+		break;
+	case SDLK_RIGHT:
+		client_keystate &= ~KEY_RIGHT;
+		break;
+	case SDLK_UP:
+		client_keystate &= ~KEY_ACCEL;
+		break;
+	default:
+		return;
+	}
+
+	irmo_object_set_int(client_player_obj, "keys", client_keystate);
+}
+
+static void run_sdl_keydown(SDL_Event *ev)
+{
+	switch (ev->key.keysym.sym) {
+	case SDLK_r:
+		gfx_rotate = !gfx_rotate;
+		return;
+	case SDLK_q:
+		net_disconnect();
+		exit(-1);
+		return;
+	case SDLK_1:
+		gfx_1stperson = !gfx_1stperson;
+		return;
+	case SDLK_LEFT:
+		client_keystate |= KEY_LEFT;
+		break;
+	case SDLK_RIGHT:
+		client_keystate |= KEY_RIGHT;
+		break;
+	case SDLK_UP:
+		client_keystate |= KEY_ACCEL;
+		break;
+	case SDLK_SPACE:
+		irmo_universe_method_call(universe, "fire",
+					  irmo_object_get_id(player));
+		return;
+	default:
+		return;
+	}
+
+	irmo_object_set_int(client_player_obj, "keys", client_keystate);
+}
+
+static void run_sdl_events()
+{
+	SDL_Event ev;
+	
+	while (SDL_PollEvent(&ev)) {
+		switch(ev.type) {
+		case SDL_KEYUP:
+			run_sdl_keyup(&ev);
+			break;
+		case SDL_KEYDOWN:
+			run_sdl_keydown(&ev);
+			break;
+		}
+	}
+}
+
+int main(int argc, char *argv[])
+{
+	GLfloat angle=0.01;
+	gchar *hostname = "localhost";
+	int i;
+
+	for (i=1; i<argc; ++i) {
+		hostname = argv[i];
+	}
+
+	models_init();
+	gfx_init();
+	net_connect(hostname);
+
+	printf("initted gfx\n");
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//glFrustum(-0.4, 0.4, -0.3, 0.3, 0.4, 200);
+	gluPerspective(90.0, 1.3333, 0.1, 2000.0);
+
+	/*
+	usleep(100);
+	net_run();
+	for(;;);
+	*/
+
+	while (1) {
+		
+		gfx_clear();
+
+		if (gfx_1stperson)
+			glMatrixMode(GL_MODELVIEW);
+		else
+			glMatrixMode(GL_PROJECTION);
+
+		glLightfv(GL_LIGHT0, GL_AMBIENT, main_light_ambient);
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, main_light_diffuse);
+
+		glMaterialfv(GL_FRONT, GL_AMBIENT, material_ambient);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, material_diffuse);
+
+		glShadeModel(GL_SMOOTH);
+ 
+		glEnable(GL_COLOR_MATERIAL);
+		glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+
+
+		glEnable(GL_LIGHTING);
+		glEnable(GL_LIGHT0);
+		glLightfv(GL_LIGHT0, GL_POSITION, main_light_position);
+
+		glScalef(0.3, 0.3, 0.3);
+		
+//		glScalef(1, 1, 1);
+		//	gluLookAt(32767, 32767, 10, 18397, 9848, 0, 0, 0, 1);
+		
+		net_render();
+		
+		gfx_update();
+
+		run_sdl_events();
+		
+		net_run();
+		usleep(100);
+	}
+
+}
+
+// $Log: not supported by cvs2svn $

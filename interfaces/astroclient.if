@@ -1,0 +1,10 @@
+
+class Player {
+	string name;
+	int8 keys;
+}
+
+method assoc_player(irmo_objid_t clobj, irmo_objid_t svobj);
+
+// $Log: not supported by cvs2svn $
+

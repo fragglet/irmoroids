@@ -1,0 +1,27 @@
+vertex V1: {-0.5, -0.1, 0.1}
+vertex V2: {-0.1, -0.1, 0.45}
+vertex V3: {0, -0.5, -0.1}
+vertex V4: {0.5, 0.1, 0.3}
+vertex V5: {0.1, 0.3, -0.25}
+vertex V6: {-0.3, 0.5, 0.2}
+vertex V7: {0.1, 0.1, -0.4}
+vertex V8: {-0.3, 0.2, -0.3}
+
+color rock: {0.7, 0.5, 0.3}
+
+poly rock {V1, V2, V3}
+poly rock {V3, V2, V4}
+poly rock {V4, V2, V5}
+poly rock {V5, V2, V6}
+poly rock {V6, V2, V1}
+
+poly rock {V1, V8, V6}
+poly rock {V3, V8, V1}
+poly rock {V3, V7, V8}
+poly rock {V4, V7, V3}
+poly rock {V5, V7, V4}
+poly rock {V5, V8, V7}
+poly rock {V6, V8, V5}
+
+# $Log: not supported by cvs2svn $
+

@@ -1,0 +1,63 @@
+define BODYLEN:		0.2
+define FRONT:		0.4
+define BODYW:		0.05
+define BODYW2:		0.1
+
+vertex V1:	{ -BODYW, -BODYLEN, BODYW }
+vertex V2: 	{ -BODYW, BODYLEN, BODYW }
+vertex V3: 	{ BODYW, BODYLEN, BODYW }
+vertex V4: 	{ BODYW, -BODYLEN, BODYW }
+vertex V5:	{ -BODYW, -BODYLEN, -BODYW }
+vertex V6: 	{ -BODYW, BODYLEN, -BODYW }
+vertex V7: 	{ BODYW, BODYLEN, -BODYW }
+vertex V8: 	{ BODYW, -BODYLEN, -BODYW }
+
+vertex LEFT1:	{ -BODYW, 0, 0}
+vertex LEFT2:	{ -BODYW2, -BODYLEN, 0}
+vertex LEFT3:	{ -BODYW, -BODYLEN, 0}
+
+vertex RIGHT1:	{ BODYW, 0, 0}
+vertex RIGHT2:	{ BODYW2, -BODYLEN, 0}
+vertex RIGHT3:	{ BODYW, -BODYLEN, 0}
+
+vertex TOP1:	{ 0, 0, BODYW}
+vertex TOP2:	{ 0, -BODYLEN, BODYW2}
+vertex TOP3: 	{ 0, -BODYLEN, BODYW}
+
+vertex BOTTOM1:	{ 0, 0, -BODYW}
+vertex BOTTOM2:	{ 0, -BODYLEN, -BODYW2}
+vertex BOTTOM3: { 0, -BODYLEN, -BODYW}
+
+vertex FRONTPT:	{ 0, FRONT, 0 }
+
+color red: 	{0.6, 0, 0}
+color fin: 	{0.7, 0.7, 0}
+color nose: 	{0.7, 0.7, 0}
+
+# body
+
+poly red { V4, V3, V2, V1 }
+poly red { V4, V3, V7, V8 }
+poly red { V8, V7, V6, V5 }
+poly red { V5, V6, V2, V1 }
+
+# back end
+
+poly red { V1, V4, V8, V5 }
+
+# nose
+
+poly nose { V2, FRONTPT, V3 }
+poly nose { V3, FRONTPT, V7 }
+poly nose { V7, FRONTPT, V6 }
+poly nose { V6, FRONTPT, V2 }
+
+# fins
+
+poly fin {TOP1, TOP2, TOP3}
+poly fin {BOTTOM1, BOTTOM2, BOTTOM3}
+poly fin {LEFT1, LEFT2, LEFT3}
+poly fin {RIGHT1, RIGHT2, RIGHT3}
+
+# $Log: not supported by cvs2svn $
+
