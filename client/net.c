@@ -213,8 +213,6 @@ static void twist_translation(IrmoObject *obj)
 {
 	long long t = get_object_time(obj);
 
-	printf("%i\n", t);
-
 	glRotatef(t, 0, 1, 0);
 }
 
@@ -251,7 +249,7 @@ static void net_render_foreach(IrmoObject *obj, gpointer user_data)
 	
 	if (modelnum == MODEL_EXPLOSION) {
 		int points = 40 * scale;
-		glColor3f(0.4/scale, 0, 0);
+		glColor4f(0.7, 0, 0, 0.5/scale);
 		gfx_draw_circle(points);
 	} else {
 		model_draw(modelnum);
@@ -333,6 +331,9 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.9  2003/09/02 18:53:57  fraggle
+// Use translucency for explosions.
+//
 // Revision 1.8  2003/09/02 16:54:31  fraggle
 // Add explosions
 //

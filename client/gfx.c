@@ -40,7 +40,10 @@ void gfx_init()
 	glClearDepth( 200.0f );
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
 	glDepthFunc(GL_LEQUAL);
+	
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glBegin(GL_POLYGON);
 
@@ -83,6 +86,9 @@ void gfx_update()
 }
 
 // $Log$
+// Revision 1.3  2003/09/02 18:53:56  fraggle
+// Use translucency for explosions.
+//
 // Revision 1.2  2003/09/02 16:54:31  fraggle
 // Add explosions
 //

@@ -38,7 +38,7 @@ struct _AstroVertex {
 
 struct _AstroColor {
 	gchar *name;
-	GLfloat color[4];
+	GLfloat color[3];
 };
 
 struct _AstroPoly {
@@ -55,8 +55,11 @@ struct _AstroMesh {
 #endif /* #ifndef ASTEROIDS_MESH_H */
 
 // $Log$
-// Revision 1.1  2003/06/09 21:34:36  fraggle
-// Initial revision
+// Revision 1.2  2003/09/02 18:53:57  fraggle
+// Use translucency for explosions.
+//
+// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
+// Initial sourceforge import
 //
 // Revision 1.2  2003/06/09 21:14:02  sdh300
 // Add Id tag and copyright notice

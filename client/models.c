@@ -36,6 +36,7 @@ static char *model_files[] = {
 	"ship1.mesh",		// MODEL_SHIP1
 	"rock1.mesh",		// MODEL_ROCK1
 	"missile1.mesh",	// MODEL_MISSILE1
+	NULL,			// MODEL_EXPLOSION
 };
 
 static AstroMesh *models[NUM_MODELS];
@@ -99,8 +100,11 @@ void model_draw(int modelnum)
 }
 
 // $Log$
-// Revision 1.1  2003/06/09 21:34:36  fraggle
-// Initial revision
+// Revision 1.2  2003/09/02 18:53:57  fraggle
+// Use translucency for explosions.
+//
+// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
+// Initial sourceforge import
 //
 // Revision 1.4  2003/06/09 21:14:03  sdh300
 // Add Id tag and copyright notice
