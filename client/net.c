@@ -45,7 +45,7 @@ guint client_keystate;
 IrmoObject *player = NULL;
 IrmoObject *player_avatar;
 
-gboolean gfx_rotate = TRUE;
+gboolean gfx_rotate = FALSE;
 gboolean gfx_1stperson = FALSE;
 
 int net_limit = 1000;
@@ -353,6 +353,9 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.12  2003/09/03 16:42:02  fraggle
+// gfx_rotate off by default, its annoying
+//
 // Revision 1.11  2003/09/03 03:00:26  fraggle
 // Unused debugging variable
 //
