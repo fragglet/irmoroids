@@ -4,12 +4,11 @@
 
 #include <GL/gl.h>
 
+#include "common/config.h"
 #include "common/models.h"
 
 #include "mesh.h"
 #include "models.h"
-
-#define MODELS_DIR "models/"
 
 static char *model_files[] = {
 	NULL,
@@ -79,3 +78,6 @@ void model_draw(int modelnum)
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
+// Initial import
+//
