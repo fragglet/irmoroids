@@ -162,7 +162,7 @@ static long long get_object_time(IrmoObject *obj)
 
 static void tumble_translation(IrmoObject *obj)
 {
-	long long t = get_object_time(obj);
+	long long t = get_object_time(obj) % (360 * 256);
 	float size = irmo_object_get_int(obj, "scale") / 256.0;
 	
 	glRotatef(t / size, 0.7, 0.2, 1);
@@ -286,6 +286,9 @@ void net_render()
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.3  2003/03/22 23:46:21  sdh300
+// Bigger objects spin slower
+//
 // Revision 1.2  2003/03/22 23:17:47  sdh300
 // Collisions between objects
 // Rocks explode into smaller rocks
