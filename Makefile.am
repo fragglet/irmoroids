@@ -1,2 +1,3 @@
-SUBDIRS=client server interfaces models
+EXTRA_SUBDIRS = client models
+SUBDIRS=server interfaces @CLIENT_SUBDIRS@
 
