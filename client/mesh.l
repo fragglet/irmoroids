@@ -238,11 +238,12 @@ static void eat_poly()
 	verts = (AstroVertex **) poly->vertexes->pdata;
 
 	vector_sub(verts[2]->pt, verts[1]->pt, u);
-	vector_sub(verts[2]->pt, verts[0]->pt, u);
+	vector_sub(verts[2]->pt, verts[0]->pt, v);
 	vector_cross(u, v, norm);
 
 	for (i=0; i<poly->vertexes->len; ++i) {
 		AstroVertex *v = (AstroVertex *) poly->vertexes->pdata[i];
+//		printf("norm: %f, %f, %f\n", norm[0], norm[1], norm[2]);
 		vector_add(v->normal, norm, v->normal);
 	}
 
@@ -357,3 +358,6 @@ int main()
 #endif
 
 // $Log: not supported by cvs2svn $
+// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
+// Initial import
+//
