@@ -27,7 +27,6 @@
 #include "common/net.h"
 #include "world.h"
 
-static IrmoSocket *sock;
 static IrmoServer *server;
 
 // send a message to a client
@@ -163,14 +162,14 @@ void server_init()
 		exit(-1);
 	}
 
-	sock = irmo_socket_new(IRMO_SOCKET_IPV4, SERVER_PORT);
+	server = irmo_server_new(IRMO_SOCKET_IPV6, SERVER_PORT, world, client_spec);
 
-	if (sock) {
+	if (server) {
 		printf("server_init: Using IPv6\n");
 	} else {
-		sock = irmo_socket_new(IRMO_SOCKET_IPV4, SERVER_PORT);
+		server = irmo_server_new(IRMO_SOCKET_IPV4, SERVER_PORT, world, client_spec);
 
-		if (sock) {
+		if (server) {
 			printf("server_init: Using IPv4\n");
 		} else {
 		
@@ -180,22 +179,18 @@ void server_init()
 		}
 	}
 
-	server = irmo_server_new(sock, NULL, world, client_spec);
-
-	if (!server) {
-		fprintf(stderr, "server_init: Unable to create server\n");
-		exit(-1);
-	}
-
 	irmo_server_watch_connect(server, on_connect, NULL);
 }
 
 void server_run()
 {
-	irmo_socket_run(sock);
+	irmo_server_run(server);
 }
 
 // $Log$
+// Revision 1.11  2004/01/06 02:08:51  fraggle
+// Move irmoroids to the new server API
+//
 // Revision 1.10  2003/11/20 00:18:03  fraggle
 // Add some fixes to get this compiling under windows
 //
