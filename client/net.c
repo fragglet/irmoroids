@@ -180,8 +180,6 @@ void net_block(void)
 	irmo_socket_block(irmo_connection_get_socket(connection), 50);
 }
 
-int shown = 0;
-
 long long get_ms()
 {
 	struct timeval nowtime;
@@ -355,6 +353,9 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.11  2003/09/03 03:00:26  fraggle
+// Unused debugging variable
+//
 // Revision 1.10  2003/09/02 20:59:36  fraggle
 // Use subclassing in irmoroids: select the model to be used by the
 // class, not a model number
