@@ -26,10 +26,14 @@ class Player {
 }
 
 method assoc_player(irmo_objid_t clobj, irmo_objid_t svobj);
+method display_message(irmo_objid_t player, string message);
 
 // $Log$
-// Revision 1.1  2003/06/09 21:34:36  fraggle
-// Initial revision
+// Revision 1.2  2003/09/20 16:18:31  fraggle
+// Add ability to send messages to players
+//
+// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
+// Initial sourceforge import
 //
 // Revision 1.2  2003/06/09 21:14:07  sdh300
 // Add Id tag and copyright notice

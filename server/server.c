@@ -30,6 +30,27 @@
 static IrmoSocket *sock;
 static IrmoServer *server;
 
+// send a message to a client
+
+void player_write_message(AstroPlayer *player, char *message, ...)
+{
+	char *text;
+	va_list args;
+
+	va_start(args, message);
+
+	text = g_strdup_vprintf(message, args);
+
+	va_end(args);
+
+	irmo_world_method_call(irmo_object_get_world(player->client_obj),
+			       "display_message", 
+			       irmo_object_get_id(player->client_obj),
+			       text);
+
+	free(text);
+}
+
 // destroy objects on client disconnect
 
 static void destroy_player(IrmoClient *client, AstroPlayer *player)
@@ -99,6 +120,10 @@ static void new_player(IrmoObject *object, AstroClient *client)
 				  player);
 
 	client->players = g_slist_append(client->players, player);
+
+	player_write_message(player, "welcome to this server.");
+	player_write_message(player, "there are currently %i players in the game",
+			     g_slist_length(world_players));
 }
 
 static void on_disconnect(IrmoClient *client, AstroClient *as_client)
@@ -171,6 +196,9 @@ void server_run()
 }
 
 // $Log$
+// Revision 1.9  2003/09/20 16:18:31  fraggle
+// Add ability to send messages to players
+//
 // Revision 1.8  2003/09/02 20:59:36  fraggle
 // Use subclassing in irmoroids: select the model to be used by the
 // class, not a model number

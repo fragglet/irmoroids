@@ -107,6 +107,11 @@ void all_object_callback(IrmoObject *object, gchar *varname, gpointer user_data)
 	       varname);
 }
 
+static void display_message(IrmoMethodData *data, gpointer user_data)
+{
+	puts(irmo_method_arg_string(data, "message"));
+}
+
 static void net_disconnected(IrmoConnection *conn, gpointer user_data)
 {
 	puts("disconnected from server");
@@ -129,6 +134,11 @@ void net_connect(char *host)
 
 	client_world = irmo_world_new(client_spec);
 	irmo_interface_spec_unref(client_spec);
+
+	// callbacks
+	
+	irmo_world_method_watch(client_world, "display_message",
+				display_message, NULL);
 
 	// create an object for the player
 
@@ -359,6 +369,9 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.15  2003/09/20 16:18:31  fraggle
+// Add ability to send messages to players
+//
 // Revision 1.14  2003/09/12 17:31:27  fraggle
 // Slight change to disconnect message
 //

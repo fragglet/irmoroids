@@ -77,7 +77,7 @@ static void run_sdl_keydown(SDL_Event *ev)
 		client_keystate |= KEY_ACCEL;
 		break;
 	case SDLK_SPACE:
-		irmo_world_method_call(world, "fire",
+		irmo_world_method_call(world, "fire", 
 					  irmo_object_get_id(player));
 		return;
 	default:
@@ -188,6 +188,9 @@ int main(int argc, char *argv[])
 }
 
 // $Log$
+// Revision 1.6  2003/09/20 16:18:31  fraggle
+// Add ability to send messages to players
+//
 // Revision 1.5  2003/09/02 20:59:36  fraggle
 // Use subclassing in irmoroids: select the model to be used by the
 // class, not a model number
