@@ -107,6 +107,12 @@ void all_object_callback(IrmoObject *object, gchar *varname, gpointer user_data)
 	       varname);
 }
 
+static void net_disconnected(IrmoConnection *conn, gpointer user_data)
+{
+	puts("disconnected by server");
+	exit(-1);
+}
+
 void net_connect(char *host)
 {
 	IrmoInterfaceSpec *spec; 
@@ -150,7 +156,7 @@ void net_connect(char *host)
 
 	irmo_client_set_max_sendwindow(connection, net_limit);
 
-	irmo_client_watch_disconnect(connection, exit, NULL);
+	irmo_client_watch_disconnect(connection, net_disconnected, NULL);
 
 	irmo_interface_spec_unref(spec);
 
@@ -353,6 +359,9 @@ void net_render()
 }
 
 // $Log$
+// Revision 1.13  2003/09/12 17:18:29  fraggle
+// Shut up the compiler
+//
 // Revision 1.12  2003/09/03 16:42:02  fraggle
 // gfx_rotate off by default, its annoying
 //
