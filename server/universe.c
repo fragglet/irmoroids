@@ -63,7 +63,6 @@ static void fire_callback(IrmoMethodData *data, gpointer user_data)
 	}
 
 	angle = (player->avatar->angle * M_PI * 2) / 0xffff;
-	angle += M_PI / 2;
 	
 	misl = universe_object_new(player->avatar->x, player->avatar->y,
 				   player->avatar->angle);
@@ -277,8 +276,7 @@ static void universe_run_players(AstroPlayer *player, gpointer user_data)
 	}
 
 	if (keystate & KEY_ACCEL) {
-		float angle = (player->avatar->angle * 2 * M_PI) / 0xffff
-			+ M_PI / 2;
+		float angle = (player->avatar->angle * 2 * M_PI) / 0xffff;
 		int dx = SPEED * cos(angle);
 		int dy = SPEED * sin(angle);
 
@@ -345,6 +343,10 @@ AstroObject *universe_new_rock(int x, int y, float scale)
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.3  2003/03/22 23:47:01  sdh300
+// Take mass into account in collisions
+// Try and stop things getting stuck inside each other
+//
 // Revision 1.2  2003/03/22 23:17:53  sdh300
 // Collisions between objects
 // Rocks explode into smaller rocks

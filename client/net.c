@@ -196,7 +196,7 @@ static void net_render_foreach(IrmoObject *obj, gpointer user_data)
 
 	glPushMatrix();
 	glTranslatef(x, y, 0);
-	glRotatef(angle, 0, 0, 1);
+	glRotatef(angle-90, 0, 0, 1);
 
 	if (modelnum == MODEL_ROCK1)
 		tumble_translation(obj);
@@ -274,7 +274,7 @@ void net_render()
 		}
 		
 		if (gfx_rotate || gfx_1stperson)
-			glRotatef(-avatar_angle, 0, 0, 1);
+			glRotatef(90-avatar_angle, 0, 0, 1);
 		glTranslatef(-avatar_x, -avatar_y, 0);
 	}
 //	glScalef(1.0/0xffff, 1.0/0xffff, 1);
@@ -286,6 +286,9 @@ void net_render()
 }
 
 // $Log: not supported by cvs2svn $
+// Revision 1.4  2003/04/21 18:48:51  sdh300
+// Fix rocks not rotating smoothly
+//
 // Revision 1.3  2003/03/22 23:46:21  sdh300
 // Bigger objects spin slower
 //
