@@ -127,11 +127,13 @@ class MirrorServer
 end
 
 class IrmoroidsMirrorServer < MirrorServer
-	def initialize(type, host, port)
+	IRMOROIDS_PORT = 2048
+
+	def initialize(type, host)
 		local_ifspec = Irmo::InterfaceSpec.new('interfaces/astroclient.if')
 		remote_ifspec = Irmo::InterfaceSpec.new('interfaces/astro.if')
 
-		super(type, host, port, remote_ifspec, local_ifspec)
+		super(type, host, IRMOROIDS_PORT, remote_ifspec, local_ifspec)
 
 		@server.watch_connect do 
 			#puts "got a new connection"
@@ -152,7 +154,7 @@ class IrmoroidsMirrorServer < MirrorServer
 	end
 end
 
-server = IrmoroidsMirrorServer.new('IPV4', 'random', 2048)
+server = IrmoroidsMirrorServer.new('IPV4', 'random')
 
 #puts "server started"
 
@@ -167,6 +169,9 @@ ensure
 end
 
 # $Log$
+# Revision 1.5  2003/09/10 15:54:47  fraggle
+# Move irmoroids port into IrmoroidsMirrorServer class, define as constant
+#
 # Revision 1.4  2003/09/02 14:27:20  fraggle
 # Remove some debugging text. Shut down the server properly. Block with
 # a shorter timeout time to improve performance.
