@@ -131,7 +131,7 @@ void net_connect(char *host)
 	}
 
 
-	connection = irmo_connect(AF_INET, 
+	connection = irmo_connect(AF_UNSPEC, 
 				  host, SERVER_PORT,
 				  spec, client_universe);
 
@@ -309,8 +309,11 @@ void net_render()
 }
 
 // $Log$
-// Revision 1.1  2003/06/09 21:34:36  fraggle
-// Initial revision
+// Revision 1.2  2003/08/06 16:16:02  fraggle
+// IPv6 support
+//
+// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
+// Initial sourceforge import
 //
 // Revision 1.9  2003/06/09 21:14:03  sdh300
 // Add Id tag and copyright notice
