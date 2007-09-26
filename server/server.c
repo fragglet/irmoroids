@@ -153,21 +153,22 @@ static void on_connect(IrmoClient *client, gpointer user_data)
 
 void server_init()
 {
-	IrmoInterfaceSpec *client_spec;
+	IrmoInterface *client_interface;
 
-	client_spec = irmo_interface_spec_new(CLIENT_INTERFACE_FILE);
+	client_interface = irmo_interface_parse(CLIENT_INTERFACE_FILE);
 
-	if (!client_spec) {
-		fprintf(stderr, "server_init: Unable to load client spec!\n");
+	if (!client_interface) {
+		fprintf(stderr, "server_init: Unable to load "
+                                "client interface file!\n");
 		exit(-1);
 	}
 
-	server = irmo_server_new(IRMO_SOCKET_IPV6, SERVER_PORT, world, client_spec);
+	server = irmo_server_new(IRMO_SOCKET_IPV6, SERVER_PORT, world, client_interface);
 
 	if (server) {
 		printf("server_init: Using IPv6\n");
 	} else {
-		server = irmo_server_new(IRMO_SOCKET_IPV4, SERVER_PORT, world, client_spec);
+		server = irmo_server_new(IRMO_SOCKET_IPV4, SERVER_PORT, world, client_interface);
 
 		if (server) {
 			printf("server_init: Using IPv4\n");

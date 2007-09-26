@@ -125,20 +125,20 @@ static void net_disconnected(IrmoConnection *conn, gpointer user_data)
 
 void net_connect(char *host)
 {
-	IrmoInterfaceSpec *spec; 
-	IrmoInterfaceSpec *client_spec;
+	IrmoInterface *iface; 
+	IrmoInterface *client_interface;
 
 	// build client world
 
-	client_spec = irmo_interface_spec_new(CLIENT_INTERFACE_FILE);
+	client_interface = irmo_interface_parse(CLIENT_INTERFACE_FILE);
 
-	if (!spec) {
-		fprintf(stderr, "unable to load interface spec file!\n");
+	if (!client_interface) {
+		fprintf(stderr, "unable to load interface file!\n");
 		exit(-1);
 	}
 
-	client_world = irmo_world_new(client_spec);
-	irmo_interface_spec_unref(client_spec);
+	client_world = irmo_world_new(client_interface);
+	irmo_interface_unref(client_interface);
 
 	// callbacks
 	
@@ -150,19 +150,18 @@ void net_connect(char *host)
 	client_player_obj = irmo_object_new(client_world, "Player");
 	irmo_object_set_string(client_player_obj, "name", getenv("USER"));
 
-	// load server spec
+	// load server interface
 
-	spec = irmo_interface_spec_new(SERVER_INTERFACE_FILE);
+	iface = irmo_interface_parse(SERVER_INTERFACE_FILE);
 
-	if (!spec) {
-		fprintf(stderr, "unable to load interface spec file!\n");
+	if (!iface) {
+		fprintf(stderr, "unable to load interface file!\n");
 		exit(-1);
 	}
 
-
 	connection = irmo_connect(IRMO_SOCKET_IPV4, 
 				  host, SERVER_PORT,
-				  spec, client_world);
+				  iface, client_world);
 
 	if (!connection) {
 		fprintf(stderr, "unable to connect to server\n");
@@ -173,7 +172,7 @@ void net_connect(char *host)
 
 	irmo_client_watch_disconnect(connection, net_disconnected, NULL);
 
-	irmo_interface_spec_unref(spec);
+	irmo_interface_unref(iface);
 
 	world = irmo_connection_get_world(connection);
 

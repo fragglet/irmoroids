@@ -100,18 +100,18 @@ static void fire_callback(IrmoMethodData *data, gpointer user_data)
 
 void world_init()
 {
-	IrmoInterfaceSpec *spec;
+	IrmoInterface *iface;
 
-	spec = irmo_interface_spec_new(SERVER_INTERFACE_FILE);
+	iface = irmo_interface_parse(SERVER_INTERFACE_FILE);
 
-	if (!spec) {
-		fprintf(stderr, "world_init: Cant load interface spec\n");
+	if (!iface) {
+		fprintf(stderr, "world_init: Cant load interface file\n");
 		return;
 	}
 
-	world = irmo_world_new(spec);
+	world = irmo_world_new(iface);
 
-	irmo_interface_spec_unref(spec);
+	irmo_interface_unref(iface);
 
 	irmo_world_method_watch(world, "fire", fire_callback, NULL);
 }
