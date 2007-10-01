@@ -250,7 +250,7 @@ static int get_object_modelnum(IrmoObject *obj)
 		return MODEL_NONE;
 }
 
-static void net_render_foreach(IrmoObject *obj, gpointer user_data)
+static void net_render_object(IrmoObject *obj)
 {
 	GLfloat x, y;
 	GLfloat angle;
@@ -298,6 +298,22 @@ static void net_render_foreach(IrmoObject *obj, gpointer user_data)
 	}
 
 	glPopMatrix();
+}
+
+void net_render_objects(IrmoWorld *world)
+{
+        IrmoIterator *iter;
+        IrmoObject *obj;
+
+        iter = irmo_world_iterate_objects(world, "Object");
+
+        while (irmo_iterator_has_more(iter)) {
+                obj = irmo_iterator_next(iter);
+
+                net_render_object(obj);
+        }
+
+        irmo_iterator_free(iter);
 }
 
 void net_render_border()
@@ -368,8 +384,7 @@ void net_render()
 //	net_render_border();
 	net_render_stars();
 	
-	irmo_world_foreach_object(world, "Object",
-				     net_render_foreach, NULL);
+        net_render_objects(world);
 }
 
 // $Log$
