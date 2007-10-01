@@ -1,9 +1,6 @@
 #!/usr/bin/env ruby
 #
-# $Id$
-#
-# Copyright (C) 2002-2003 University of Southampton
-# Copyright (C) 2003 Simon Howard
+# Copyright (C) 2002-3 Simon Howard
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -172,25 +169,4 @@ ensure
 	#puts "shutting down"
 	server.shutdown
 end
-
-# $Log$
-# Revision 1.6  2003/09/13 15:26:41  fraggle
-# Take a host to connect to as a command line argument
-#
-# Revision 1.5  2003/09/10 15:54:47  fraggle
-# Move irmoroids port into IrmoroidsMirrorServer class, define as constant
-#
-# Revision 1.4  2003/09/02 14:27:20  fraggle
-# Remove some debugging text. Shut down the server properly. Block with
-# a shorter timeout time to improve performance.
-#
-# Revision 1.3  2003/09/01 19:29:12  fraggle
-# Use the new blocking functions
-#
-# Revision 1.2  2003/09/01 18:05:16  fraggle
-# Use a struct instead of a hashtable. Add some comments
-#
-# Revision 1.1  2003/09/01 17:07:39  fraggle
-# Irmoroids mirroring server
-#
 

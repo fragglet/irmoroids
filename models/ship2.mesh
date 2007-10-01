@@ -52,11 +52,3 @@ poly red { BOTTOM3, FRONTPT, BOTTOM2 }
 poly red { BOTTOM2, FRONTPT, RIGHT1 }
 poly red { BOTTOM3, FRONTPT, LEFT1 }
 
-# $Log$
-# Revision 1.1  2003/06/09 21:34:37  fraggle
-# Initial revision
-#
-# Revision 1.1.1.1  2003/03/17 17:59:29  sdh300
-# Initial import
-#
-

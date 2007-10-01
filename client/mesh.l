@@ -1,9 +1,6 @@
 /* Emacs style mode select -*- C++ -*-
  *
- * $Id$
- *
- * Copyright (C) 2002-2003 University of Southampton
- * Copyright (C) 2003 Simon Howard
+ * Copyright (C) 2002-3 Simon Howard
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -393,22 +390,3 @@ int main()
 
 #endif
 
-// $Log$
-// Revision 1.3  2004/04/17 16:06:52  fraggle
-// Normalise vectors in meshes
-//
-// Revision 1.2  2003/06/10 20:55:50  fraggle
-// Use /* -- */ comments for lex headers
-//
-// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
-// Initial sourceforge import
-//
-// Revision 1.3  2003/06/09 21:14:02  sdh300
-// Add Id tag and copyright notice
-//
-// Revision 1.2  2003/05/21 01:48:56  sdh300
-// Fix normal calculation
-//
-// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
-// Initial import
-//

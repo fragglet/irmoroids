@@ -1,10 +1,7 @@
 // Emacs style mode select -*- C++ -*-
 //---------------------------------------------------------------------
 //
-// $Id$
-//
-// Copyright (C) 2002-2003 University of Southampton
-// Copyright (C) 2003 Simon Howard
+// Copyright (C) 2002-3 Simon Howard
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
@@ -440,58 +437,3 @@ AstroObject *world_new_rock(int x, int y, float scale)
 	return obj;
 }
 
-// $Log$
-// Revision 1.10  2003/11/20 00:18:03  fraggle
-// Add some fixes to get this compiling under windows
-//
-// Revision 1.9  2003/11/17 01:43:21  fraggle
-// Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
-//
-// Revision 1.8  2003/09/13 16:12:21  fraggle
-// Fix int overflows
-//
-// Revision 1.7  2003/09/03 02:58:17  fraggle
-// Make rock explosions a bit more random
-//
-// Revision 1.6  2003/09/02 20:59:36  fraggle
-// Use subclassing in irmoroids: select the model to be used by the
-// class, not a model number
-//
-// Revision 1.5  2003/09/02 16:54:32  fraggle
-// Add explosions
-//
-// Revision 1.4  2003/09/02 15:49:30  fraggle
-// Make objects smaller in scale (increase arena size)
-//
-// Revision 1.3  2003/09/02 15:32:53  fraggle
-// Limited life on missiles
-//
-// Revision 1.2  2003/09/02 15:12:00  fraggle
-// Create an AstroClient object with a list of AstroPlayers for each object.
-// To stop players being destroyed twice
-//
-// Revision 1.1  2003/09/01 14:35:51  fraggle
-// Rename Universe -> World
-//
-// Revision 1.1.1.1  2003/06/09 21:34:37  fraggle
-// Initial sourceforge import
-//
-// Revision 1.5  2003/06/09 21:14:09  sdh300
-// Add Id tag and copyright notice
-//
-// Revision 1.4  2003/04/21 18:59:07  sdh300
-// The models point in the wrong direction, requiring a 90 degree offset to
-// angles. Fix this in the client side, not the server side.
-//
-// Revision 1.3  2003/03/22 23:47:01  sdh300
-// Take mass into account in collisions
-// Try and stop things getting stuck inside each other
-//
-// Revision 1.2  2003/03/22 23:17:53  sdh300
-// Collisions between objects
-// Rocks explode into smaller rocks
-// Scaling of world objects
-//
-// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
-// Initial import
-//

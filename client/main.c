@@ -1,10 +1,7 @@
 // Emacs style mode select -*- C++ -*-
 //---------------------------------------------------------------------
 //
-// $Id$
-//
-// Copyright (C) 2002-2003 University of Southampton
-// Copyright (C) 2003 Simon Howard
+// Copyright (C) 2002-3 Simon Howard
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
@@ -194,41 +191,3 @@ int main(int argc, char *argv[])
 
 }
 
-// $Log$
-// Revision 1.8  2003/11/20 00:18:02  fraggle
-// Add some fixes to get this compiling under windows
-//
-// Revision 1.7  2003/11/17 01:43:21  fraggle
-// Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
-//
-// Revision 1.6  2003/09/20 16:18:31  fraggle
-// Add ability to send messages to players
-//
-// Revision 1.5  2003/09/02 20:59:36  fraggle
-// Use subclassing in irmoroids: select the model to be used by the
-// class, not a model number
-//
-// Revision 1.4  2003/09/02 15:49:30  fraggle
-// Make objects smaller in scale (increase arena size)
-//
-// Revision 1.3  2003/09/01 19:29:12  fraggle
-// Use the new blocking functions
-//
-// Revision 1.2  2003/09/01 14:35:51  fraggle
-// Rename Universe -> World
-//
-// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
-// Initial sourceforge import
-//
-// Revision 1.4  2003/06/09 21:14:02  sdh300
-// Add Id tag and copyright notice
-//
-// Revision 1.3  2003/05/21 01:51:59  sdh300
-// Add command line options for demo
-//
-// Revision 1.2  2003/04/21 19:18:02  sdh300
-// Fix 1st-person mode
-//
-// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
-// Initial import
-//

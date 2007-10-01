@@ -1,10 +1,7 @@
 // Emacs style mode select -*- C++ -*-
 //---------------------------------------------------------------------
 //
-// $Id$
-//
-// Copyright (C) 2002-2003 University of Southampton
-// Copyright (C) 2003 Simon Howard
+// Copyright (C) 2002-3 Simon Howard
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
@@ -26,15 +23,4 @@ void server_init();
 void server_run();
 
 #endif /* #ifndef ASTRO_SERVER_H */
-
-// $Log$
-// Revision 1.1  2003/06/09 21:34:37  fraggle
-// Initial revision
-//
-// Revision 1.2  2003/06/09 21:14:09  sdh300
-// Add Id tag and copyright notice
-//
-// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
-// Initial import
-//
 

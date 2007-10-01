@@ -1,10 +1,7 @@
 // Emacs style mode select -*- C++ -*-
 //---------------------------------------------------------------------
 //
-// $Id$
-//
-// Copyright (C) 2002-2003 University of Southampton
-// Copyright (C) 2003 Simon Howard
+// Copyright (C) 2002-3 Simon Howard
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
@@ -188,51 +185,3 @@ void server_run()
 	irmo_server_run(server);
 }
 
-// $Log$
-// Revision 1.11  2004/01/06 02:08:51  fraggle
-// Move irmoroids to the new server API
-//
-// Revision 1.10  2003/11/20 00:18:03  fraggle
-// Add some fixes to get this compiling under windows
-//
-// Revision 1.9  2003/09/20 16:18:31  fraggle
-// Add ability to send messages to players
-//
-// Revision 1.8  2003/09/02 20:59:36  fraggle
-// Use subclassing in irmoroids: select the model to be used by the
-// class, not a model number
-//
-// Revision 1.7  2003/09/02 15:49:30  fraggle
-// Make objects smaller in scale (increase arena size)
-//
-// Revision 1.6  2003/09/02 15:12:00  fraggle
-// Create an AstroClient object with a list of AstroPlayers for each object.
-// To stop players being destroyed twice
-//
-// Revision 1.5  2003/09/01 17:04:32  fraggle
-// destroy players when the client player object is destroyed as well
-// as when the client disconnects
-//
-// Revision 1.4  2003/09/01 14:35:51  fraggle
-// Rename Universe -> World
-//
-// Revision 1.3  2003/08/26 14:58:17  fraggle
-// Stop using AF_* in irmoroids.
-//
-// Revision 1.2  2003/08/06 16:16:03  fraggle
-// IPv6 support
-//
-// Revision 1.1.1.1  2003/06/09 21:34:37  fraggle
-// Initial sourceforge import
-//
-// Revision 1.3  2003/06/09 21:14:09  sdh300
-// Add Id tag and copyright notice
-//
-// Revision 1.2  2003/03/22 23:17:53  sdh300
-// Collisions between objects
-// Rocks explode into smaller rocks
-// Scaling of world objects
-//
-// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
-// Initial import
-//

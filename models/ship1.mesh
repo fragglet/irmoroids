@@ -17,14 +17,3 @@ poly ship {FRONTPT, BOTRIGHT, TOPRIGHT}
 
 poly engine {TOPLEFT, TOPRIGHT, BOTRIGHT, BOTLEFT}
 
-# $Log$
-# Revision 1.2  2003/08/26 14:58:17  fraggle
-# Stop using AF_* in irmoroids.
-#
-# Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
-# Initial sourceforge import
-#
-# Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
-# Initial import
-#
-

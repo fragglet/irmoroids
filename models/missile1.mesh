@@ -59,11 +59,3 @@ poly fin {BOTTOM1, BOTTOM2, BOTTOM3}
 poly fin {LEFT1, LEFT2, LEFT3}
 poly fin {RIGHT1, RIGHT2, RIGHT3}
 
-# $Log$
-# Revision 1.1  2003/06/09 21:34:36  fraggle
-# Initial revision
-#
-# Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
-# Initial import
-#
-

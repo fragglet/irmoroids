@@ -1,10 +1,7 @@
 // Emacs style mode select -*- C++ -*-
 //---------------------------------------------------------------------
 //
-// $Id$
-//
-// Copyright (C) 2002-2003 University of Southampton
-// Copyright (C) 2003 Simon Howard
+// Copyright (C) 2002-3 Simon Howard
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
@@ -35,17 +32,3 @@ void models_init();
 
 #endif /* #ifndef ASTRO_MODELS_H */
 
-// $Log$
-// Revision 1.2  2003/09/02 20:59:36  fraggle
-// Use subclassing in irmoroids: select the model to be used by the
-// class, not a model number
-//
-// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
-// Initial sourceforge import
-//
-// Revision 1.2  2003/06/09 21:14:03  sdh300
-// Add Id tag and copyright notice
-//
-// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
-// Initial import
-//

@@ -1,10 +1,7 @@
 // Emacs style mode select -*- C++ -*-
 //---------------------------------------------------------------------
 //
-// $Id$
-//
-// Copyright (C) 2002-2003 University of Southampton
-// Copyright (C) 2003 Simon Howard
+// Copyright (C) 2002-3 Simon Howard
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
@@ -387,87 +384,3 @@ void net_render()
         net_render_objects(world);
 }
 
-// $Log$
-// Revision 1.17  2003/11/20 00:18:02  fraggle
-// Add some fixes to get this compiling under windows
-//
-// Revision 1.16  2003/11/17 01:43:21  fraggle
-// Rename irmo_objid_t to IrmoObjectID. Fix GL mode which was broken.
-//
-// Revision 1.15  2003/09/20 16:18:31  fraggle
-// Add ability to send messages to players
-//
-// Revision 1.14  2003/09/12 17:31:27  fraggle
-// Slight change to disconnect message
-//
-// Revision 1.13  2003/09/12 17:18:29  fraggle
-// Shut up the compiler
-//
-// Revision 1.12  2003/09/03 16:42:02  fraggle
-// gfx_rotate off by default, its annoying
-//
-// Revision 1.11  2003/09/03 03:00:26  fraggle
-// Unused debugging variable
-//
-// Revision 1.10  2003/09/02 20:59:36  fraggle
-// Use subclassing in irmoroids: select the model to be used by the
-// class, not a model number
-//
-// Revision 1.9  2003/09/02 18:53:57  fraggle
-// Use translucency for explosions.
-//
-// Revision 1.8  2003/09/02 16:54:31  fraggle
-// Add explosions
-//
-// Revision 1.7  2003/09/02 15:49:30  fraggle
-// Make objects smaller in scale (increase arena size)
-//
-// Revision 1.6  2003/09/02 14:27:20  fraggle
-// Remove some debugging text. Shut down the server properly. Block with
-// a shorter timeout time to improve performance.
-//
-// Revision 1.5  2003/09/01 19:29:12  fraggle
-// Use the new blocking functions
-//
-// Revision 1.4  2003/09/01 14:35:51  fraggle
-// Rename Universe -> World
-//
-// Revision 1.3  2003/08/26 14:58:17  fraggle
-// Stop using AF_* in irmoroids.
-//
-// Revision 1.2  2003/08/06 16:16:02  fraggle
-// IPv6 support
-//
-// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
-// Initial sourceforge import
-//
-// Revision 1.9  2003/06/09 21:14:03  sdh300
-// Add Id tag and copyright notice
-//
-// Revision 1.8  2003/05/21 01:52:00  sdh300
-// Add command line options for demo
-//
-// Revision 1.7  2003/05/20 16:44:56  sdh300
-// Remove duplicated INTERFACES_DIR
-//
-// Revision 1.6  2003/04/21 19:18:03  sdh300
-// Fix 1st-person mode
-//
-// Revision 1.5  2003/04/21 18:59:04  sdh300
-// The models point in the wrong direction, requiring a 90 degree offset to
-// angles. Fix this in the client side, not the server side.
-//
-// Revision 1.4  2003/04/21 18:48:51  sdh300
-// Fix rocks not rotating smoothly
-//
-// Revision 1.3  2003/03/22 23:46:21  sdh300
-// Bigger objects spin slower
-//
-// Revision 1.2  2003/03/22 23:17:47  sdh300
-// Collisions between objects
-// Rocks explode into smaller rocks
-// Scaling of world objects
-//
-// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
-// Initial import
-//

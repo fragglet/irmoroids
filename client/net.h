@@ -1,10 +1,7 @@
 // Emacs style mode select -*- C++ -*-
 //---------------------------------------------------------------------
 //
-// $Id$
-//
-// Copyright (C) 2002-2003 University of Southampton
-// Copyright (C) 2003 Simon Howard
+// Copyright (C) 2002-3 Simon Howard
 //
 // This program is free software; you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the
@@ -44,22 +41,3 @@ extern int net_limit;
 
 #endif /* #ifndef ASTRO_NET_H */
 
-// $Log$
-// Revision 1.3  2003/09/01 19:29:12  fraggle
-// Use the new blocking functions
-//
-// Revision 1.2  2003/09/01 14:35:51  fraggle
-// Rename Universe -> World
-//
-// Revision 1.1.1.1  2003/06/09 21:34:36  fraggle
-// Initial sourceforge import
-//
-// Revision 1.3  2003/06/09 21:14:03  sdh300
-// Add Id tag and copyright notice
-//
-// Revision 1.2  2003/05/21 01:52:00  sdh300
-// Add command line options for demo
-//
-// Revision 1.1.1.1  2003/03/17 17:59:28  sdh300
-// Initial import
-//
