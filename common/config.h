@@ -19,11 +19,7 @@
 #ifndef COMMON_CONFIG_H
 #define COMMON_CONFIG_H
 
-#define INTERFACES_DIR INSTALL_ROOT "/interfaces"
 #define MODELS_DIR INSTALL_ROOT "/models"
-
-#define CLIENT_INTERFACE_FILE INTERFACES_DIR "/astroclient.if"
-#define SERVER_INTERFACE_FILE INTERFACES_DIR "/astro.if"
 
 #endif /* #ifndef COMMON_CONFIG_H */
 

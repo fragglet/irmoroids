@@ -1,8 +1,14 @@
-INCLUDES=$(IRMO_CFLAGS) -I.. -DINSTALL_ROOT=\"$(pkgdatadir)\" 
 
-bin_PROGRAMS = irmoroids-server
+noinst_LTLIBRARIES=libirmoroids-server.la
 
-irmoroids_server_SOURCES=						\
-	main.c  server.c  server.h  world.c  world.h
-irmoroids_server_LDADD=$(IRMO_LIBS) -lm
+libirmoroids_server_la_CFLAGS=                             \
+        -I..                                               \
+        $(IRMO_CFLAGS)                                     \
+        -DINSTALL_ROOT=\"$(pkgdatadir)\"
+
+libirmoroids_server_la_SOURCES=                            \
+        main.c                                             \
+        server.c         server.h                          \
+        world.c          world.h
+libirmoroids_server_la_LIBADD=$(IRMO_LIBS) -lm
 

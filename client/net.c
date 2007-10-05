@@ -30,6 +30,8 @@
 #include "common/config.h"
 #include "common/net.h"
 
+#include "interfaces/interfaces.h"
+
 #include "models.h"
 #include "net.h"
 
@@ -127,7 +129,8 @@ void net_connect(char *host)
 
 	// build client world
 
-	client_interface = irmo_interface_parse(CLIENT_INTERFACE_FILE);
+        client_interface = irmo_interface_load(interface_astroclient,
+                                               interface_astroclient_length);
 
 	if (!client_interface) {
 		fprintf(stderr, "unable to load interface file!\n");
@@ -149,7 +152,7 @@ void net_connect(char *host)
 
 	// load server interface
 
-	iface = irmo_interface_parse(SERVER_INTERFACE_FILE);
+        iface = irmo_interface_load(interface_astro, interface_astro_length);
 
 	if (!iface) {
 		fprintf(stderr, "unable to load interface file!\n");

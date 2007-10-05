@@ -22,6 +22,7 @@
 
 #include "common/config.h"
 #include "common/net.h"
+#include "interfaces/interfaces.h"
 #include "world.h"
 
 static IrmoServer *server;
@@ -152,7 +153,8 @@ void server_init()
 {
 	IrmoInterface *client_interface;
 
-	client_interface = irmo_interface_parse(CLIENT_INTERFACE_FILE);
+	client_interface = irmo_interface_load(interface_astroclient,
+                                               interface_astroclient_length);
 
 	if (!client_interface) {
 		fprintf(stderr, "server_init: Unable to load "
@@ -160,7 +162,8 @@ void server_init()
 		exit(-1);
 	}
 
-	server = irmo_server_new(IRMO_SOCKET_IPV6, SERVER_PORT, world, client_interface);
+	server = irmo_server_new(IRMO_SOCKET_IPV6, SERVER_PORT, world,
+                                 client_interface);
 
 	if (server) {
 		printf("server_init: Using IPv6\n");

@@ -26,6 +26,7 @@
 
 #include "common/config.h"
 #include "common/net.h"
+#include "interfaces/interfaces.h"
 #include "world.h"
 
 #define EXPLOSION_TIME 10
@@ -99,7 +100,8 @@ void world_init()
 {
 	IrmoInterface *iface;
 
-	iface = irmo_interface_parse(SERVER_INTERFACE_FILE);
+	iface = irmo_interface_load(interface_astro,
+                                    interface_astro_length);
 
 	if (!iface) {
 		fprintf(stderr, "world_init: Cant load interface file\n");
