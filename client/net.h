@@ -30,12 +30,12 @@ extern IrmoWorld *world;
 
 extern IrmoWorld *client_world;
 extern IrmoObject *client_player_obj;
-extern guint client_keystate;
+extern unsigned int client_keystate;
 
 extern IrmoObject *player;
 extern IrmoObject *player_avatar;
 
-extern gboolean gfx_rotate, gfx_1stperson;
+extern int gfx_rotate, gfx_1stperson;
 
 extern int net_limit;
 

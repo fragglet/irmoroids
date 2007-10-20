@@ -42,18 +42,16 @@ static AstroMesh *models[NUM_MODELS];
 
 void models_init()
 {
+        char filename[128];
 	int i;
 
 	for (i=0; i<NUM_MODELS; ++i) {
-		gchar *filename;
-		
 		if (!model_files[i]) {
 			models[i] = NULL;
 			continue;
 		}
 
-		filename = g_strdup_printf("%s/%s",
-					   MODELS_DIR, model_files[i]);
+                sprintf(filename, "%s/%s", MODELS_DIR, model_files[i]);
 		
 		models[i] = mesh_read_from_file(filename);
 
@@ -61,7 +59,6 @@ void models_init()
 			fprintf(stderr, "Unable to load %s\n", filename);
 			exit(-1);
 		}
-		free(filename);
 	}
 }
 
@@ -75,19 +72,18 @@ void model_draw(int modelnum)
 
 	mesh  = models[modelnum];
 
-	for (i=0; i<mesh->polygons->len; ++i) {
+	for (i=0; i<mesh->num_polygons; ++i) {
 		AstroPoly *poly;
 
-		poly = (AstroPoly *) mesh->polygons->pdata[i];
+		poly = (AstroPoly *) mesh->polygons[i];
 
 		glColor3fv(poly->color->color);
 		
 		glBegin(GL_POLYGON);
 		//glBegin(GL_LINE_LOOP);
 
-		for (n=0; n<poly->vertexes->len; ++n) {
-			AstroVertex *v 
-				= (AstroVertex *) poly->vertexes->pdata[n];
+		for (n=0; n<poly->num_vertices; ++n) {
+			AstroVertex *v = (AstroVertex *) poly->vertices[n];
 
 			glNormal3fv(v->normal);
 //	printf("%f, %f, %f\n", v->normal[0], v->normal[1], v->normal[2]);

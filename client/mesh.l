@@ -1,5 +1,4 @@
-/* Emacs style mode select -*- C++ -*-
- *
+/*
  * Copyright (C) 2002-3 Simon Howard
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -15,6 +14,9 @@
  */
  
 %{
+
+#include <stdlib.h>
+#include <stdarg.h>
 
 #include "mesh.h"
 
@@ -43,14 +45,13 @@ typedef enum {
 		result = (c == EOF) ? YY_NULL : (buf[0] = c, 1);        \
 	}
 
-// names for ordinates, hashed by name
-
 typedef struct {
-	gchar *name;
+	char *name;
 	GLfloat val;
 } AstroDefine;
 
-static GHashTable *defines;
+static AstroDefine **defines;
+static int num_defines;
 
 static AstroMesh *mesh;
 static char *yyin_filename;
@@ -96,6 +97,45 @@ static void parse_assert(int expr, char *msg, ...)
 	}
 }
 
+static AstroDefine *get_define_by_name(char *name)
+{
+        int i;
+
+        for (i=0; i<num_defines; ++i) {
+                if (!strcmp(defines[i]->name, name)) {
+                        return defines[i];
+                }
+        }
+
+        return NULL;
+}
+
+static AstroColor *get_color_by_name(AstroMesh *mesh, char *name)
+{
+        int i;
+
+        for (i=0; i<mesh->num_colors; ++i) {
+                if (!strcmp(mesh->colors[i]->name, name)) {
+                        return mesh->colors[i];
+                }
+        }
+
+        return NULL;
+}
+
+static AstroVertex *get_vertex_by_name(AstroMesh *mesh, char *name)
+{
+        int i;
+
+        for (i=0; i<mesh->num_vertices; ++i) {
+                if (!strcmp(mesh->vertices[i]->name, name)) {
+                        return mesh->vertices[i];
+                }
+        }
+
+        return NULL;
+}
+
 static GLfloat eat_ordinate()
 {
 	token_t token;
@@ -103,8 +143,7 @@ static GLfloat eat_ordinate()
 	token = yylex();
 
 	if (token == TOKEN_NAME) {
-		AstroDefine *def = (AstroDefine *) 
-				g_hash_table_lookup(defines, yytext);
+		AstroDefine *def = get_define_by_name(yytext);
 
 		parse_assert(def != NULL,
 			     "unknown define name '%s'", yytext);
@@ -127,14 +166,14 @@ static void eat_define()
 	AstroDefine *def;
 	token_t token;
 
-	def = g_new0(AstroDefine, 1);
+	def = malloc(sizeof(AstroDefine));
 	
 	token = yylex();
 	parse_assert(token == TOKEN_NAME, "expected a valid define name");
-	parse_assert(g_hash_table_lookup(defines, yytext) == NULL,
+	parse_assert(get_define_by_name(yytext) == NULL,
 		     "multiple defines named '%s'", yytext);
 
-	def->name = g_strdup(yytext);
+	def->name = strdup(yytext);
  
  	token = yylex();
 	parse_assert(token == TOKEN_COLON, "expecting a colon");
@@ -143,7 +182,11 @@ static void eat_define()
 
 	// add to list of defines
 
-	g_hash_table_insert(defines, def->name, def);
+        defines = realloc(defines,
+                          (num_defines + 1) * sizeof(AstroDefine *));
+
+        defines[num_defines] = def;
+        ++num_defines;
 }
 
 static void eat_vertex()
@@ -152,14 +195,14 @@ static void eat_vertex()
 	token_t token;
 	int i;
 
-	vertex = g_new0(AstroVertex, 1);
+	vertex = malloc(sizeof(AstroVertex));
 
 	token = yylex();
 	parse_assert(token == TOKEN_NAME, "expected a valid vertex name");
-	parse_assert(g_hash_table_lookup(mesh->vertexes, yytext) == NULL,
-		     "multiple vertexes named '%s'", yytext);
+	parse_assert(get_vertex_by_name(mesh, yytext) == NULL,
+		     "multiple vertices named '%s'", yytext);
 	
-	vertex->name = g_strdup(yytext);
+	vertex->name = strdup(yytext);
 
 	token = yylex();
 	parse_assert(token == TOKEN_COLON, "expecting a colon");
@@ -180,7 +223,11 @@ static void eat_vertex()
 		}
 	}
 	
-	g_hash_table_insert(mesh->vertexes, vertex->name, vertex);
+        mesh->vertices = realloc(mesh->vertices,
+                                 (mesh->num_vertices + 1) * sizeof(AstroVertex *));
+
+        mesh->vertices[mesh->num_vertices] = vertex;
+        ++mesh->num_vertices;
 }
 
 static void vector_cross(GLfloat *u, GLfloat *v, GLfloat *result)
@@ -212,16 +259,14 @@ static void eat_poly()
 	GLfloat u[3], v[3], norm[3]; 
 	int i;
 
-	poly = g_new0(AstroPoly, 1);
-	poly->vertexes = g_ptr_array_new();
+	poly = malloc(sizeof(AstroPoly));
+        memset(poly, 0, sizeof(AstroPoly));
 
 	token = yylex();
 	parse_assert(token == TOKEN_NAME, "expecting a valid color name");
 	
-	poly->color = (AstroColor *) 
-		g_hash_table_lookup(mesh->colors, yytext);
-	parse_assert(poly->color != NULL,
-		     "unknown color '%s'", yytext);
+	poly->color = (AstroColor *) get_color_by_name(mesh, yytext);
+	parse_assert(poly->color != NULL, "unknown color '%s'", yytext);
 
 	token = yylex();
 	parse_assert(token == TOKEN_LPAREN, "expecting '{'");
@@ -233,12 +278,15 @@ static void eat_poly()
 		parse_assert(token == TOKEN_NAME,
 			     "expecting a vertex name");
 
-		vertex = (AstroVertex *)
-			g_hash_table_lookup(mesh->vertexes, yytext);
+		vertex = (AstroVertex *) get_vertex_by_name(mesh, yytext);
 		parse_assert(vertex != NULL,
 			     "vertex '%s' not found", yytext);
 
-		g_ptr_array_add(poly->vertexes, vertex);
+                poly->vertices = realloc(poly->vertices,
+                                         (poly->num_vertices + 1) 
+                                            * sizeof(AstroVertex *));
+                poly->vertices[poly->num_vertices] = vertex;
+                ++poly->num_vertices;
 
 		token = yylex();
 		
@@ -246,19 +294,22 @@ static void eat_poly()
 			break;
 
 		parse_assert(token == TOKEN_COMMA,
-			     "expecting a comma between vertexes");
+			     "expecting a comma between vertices");
 	}
 
-	g_ptr_array_add(mesh->polygons, poly);
+        mesh->polygons = realloc(mesh->polygons,
+                                 (mesh->num_polygons + 1) * sizeof(AstroPoly *));
+        mesh->polygons[mesh->num_polygons] = poly;
+        ++mesh->num_polygons;
 
-	verts = (AstroVertex **) poly->vertexes->pdata;
+	verts = (AstroVertex **) poly->vertices;
 
 	vector_sub(verts[2]->pt, verts[1]->pt, u);
 	vector_sub(verts[2]->pt, verts[0]->pt, v);
 	vector_cross(u, v, norm);
 
-	for (i=0; i<poly->vertexes->len; ++i) {
-		AstroVertex *v = (AstroVertex *) poly->vertexes->pdata[i];
+	for (i=0; i<poly->num_vertices; ++i) {
+		AstroVertex *v = (AstroVertex *) poly->vertices[i];
 //		printf("norm: %f, %f, %f\n", norm[0], norm[1], norm[2]);
 		vector_add(v->normal, norm, v->normal);
 	}
@@ -272,14 +323,14 @@ static void eat_color()
 	token_t token;
 	int i;
 	
-	color = g_new0(AstroColor, 1);
+	color = malloc(sizeof(AstroColor));
 
 	token = yylex();
 	parse_assert(token == TOKEN_NAME, "expecting a valid color name");
-	parse_assert(g_hash_table_lookup(mesh->colors, yytext) == NULL,
+	parse_assert(get_color_by_name(mesh, yytext) == NULL,
 		     "multiple colors named '%s'", yytext);
 	
-	color->name = g_strdup(yytext);
+	color->name = strdup(yytext);
 
 	token = yylex();
 	parse_assert(token == TOKEN_COLON, "expecting a colon");
@@ -301,19 +352,19 @@ static void eat_color()
 		}
 	}
 
-	g_hash_table_insert(mesh->colors, color->name, color);
+        mesh->colors = realloc(mesh->colors,
+                               (mesh->num_colors + 1) * sizeof(AstroColor *));
+        mesh->colors[mesh->num_colors] = color;
+        ++mesh->num_colors;
 }
 
-static gboolean destroy_defines(gchar *name, AstroDefine *def,
-				gpointer user_data)
+static void destroy_define(AstroDefine *def)
 {
 	free(def->name);
 	free(def);
-
-	return TRUE;
 }
 
-static void normalise_vector(gpointer key, AstroVertex *vertex, gpointer user_data)
+static void normalise_vector(AstroVertex *vertex)
 {
 	GLfloat mag;
 
@@ -328,19 +379,19 @@ static void normalise_vector(gpointer key, AstroVertex *vertex, gpointer user_da
 	vertex->normal[2] /= mag;
 }
 
-AstroMesh *mesh_read_from_file(gchar *filename)
+AstroMesh *mesh_read_from_file(char *filename)
 {
 	token_t tok;
+        int i;
 
 	yyin_filename = filename;
 	line_num = 1;
 
-	mesh = g_new0(AstroMesh, 1);
-	mesh->vertexes = g_hash_table_new(g_str_hash, g_str_equal);
-	mesh->polygons = g_ptr_array_new();
-	mesh->colors = g_hash_table_new(g_str_hash, g_str_equal);
+	mesh = malloc(sizeof(AstroMesh));
+        memset(mesh, 0, sizeof(AstroMesh));
 
-	defines = g_hash_table_new(g_str_hash, g_str_equal);
+	defines = NULL;
+        num_defines = 0;
 	
 	yyin = fopen(filename, "r");
 
@@ -372,11 +423,16 @@ AstroMesh *mesh_read_from_file(gchar *filename)
 
 	fclose(yyin);
 
-	g_hash_table_foreach(mesh->vertexes, (GHFunc) normalise_vector, NULL);
+        // Normalise all vertices
 
-	g_hash_table_foreach_remove(defines, 
-				    (GHRFunc) destroy_defines, NULL);
-	g_hash_table_destroy(defines);
+        for (i=0; i<mesh->num_vertices; ++i) {
+                normalise_vector(mesh->vertices[i]);
+        }
+
+        for (i=0; i<num_defines; ++i) {
+                destroy_define(defines[i]);
+        }
+        free(defines);
 
 	return mesh;
 }

@@ -26,18 +26,11 @@
 
 #include "common/config.h"
 #include "common/net.h"
+#include "common/math-constants.h"
 #include "interfaces/interfaces.h"
 #include "world.h"
 
 #define EXPLOSION_TIME 10
-
-#ifndef PI
-#define PI           3.14159265358979323846  /* pi */
-#endif
-
-#ifndef PI_2
-#define PI_2         1.57079632679489661923  /* pi/2 */
-#endif
 
 IrmoWorld *world;
 AstroObject *world_objects = NULL;

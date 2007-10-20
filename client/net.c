@@ -22,12 +22,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <glib.h>
 #include <irmo.h>
 #include <GL/gl.h>
 #include <math.h>
 
 #include "common/config.h"
+#include "common/math-constants.h"
 #include "common/net.h"
 
 #include "interfaces/interfaces.h"
@@ -44,13 +44,13 @@ IrmoWorld *world;
 
 IrmoWorld *client_world;
 IrmoObject *client_player_obj;
-guint client_keystate;
+unsigned int client_keystate;
 
 IrmoObject *player = NULL;
 IrmoObject *player_avatar;
 
-gboolean gfx_rotate = FALSE;
-gboolean gfx_1stperson = FALSE;
+int gfx_rotate = 0;
+int gfx_1stperson = 0;
 
 int net_limit = 1000;
 
@@ -96,14 +96,14 @@ void make_stars()
 	}
 }
 
-void player_callback(IrmoMethodData *data, gpointer user_data)
+void player_callback(IrmoMethodData *data, void *user_data)
 {
 	IrmoObjectID id = irmo_method_arg_int(data, "svobj");
 
 	player = irmo_world_get_object_for_id(world, id);
 }
 
-void all_object_callback(IrmoObject *object, gchar *varname, gpointer user_data)
+void all_object_callback(IrmoObject *object, char *varname, void *user_data)
 {
 	printf("object %i(%s)::%s changed\n", 
 	       irmo_object_get_id(object),
@@ -111,12 +111,12 @@ void all_object_callback(IrmoObject *object, gchar *varname, gpointer user_data)
 	       varname);
 }
 
-static void display_message(IrmoMethodData *data, gpointer user_data)
+static void display_message(IrmoMethodData *data, void *user_data)
 {
 	puts(irmo_method_arg_string(data, "message"));
 }
 
-static void net_disconnected(IrmoConnection *conn, gpointer user_data)
+static void net_disconnected(IrmoConnection *conn, void *user_data)
 {
 	puts("disconnected from server");
 	exit(0);
@@ -200,18 +200,9 @@ void net_block(void)
 	irmo_socket_block(irmo_connection_get_socket(connection), 20);
 }
 
-long long get_ms()
-{
-	GTimeVal nowtime;
-
-	g_get_current_time(&nowtime);
-
-	return nowtime.tv_sec * 1000 + nowtime.tv_usec / 1000;
-}
-
 static long long get_object_time(IrmoObject *obj)
 {
-	long long t = get_ms() / 10;
+	long long t = SDL_GetTicks() / 10;
 
 	t += irmo_object_get_id(obj) * 4000;
 
@@ -368,8 +359,8 @@ void net_render()
 							      "angle"));
 		//avatar_angle = 180;
 
-		avatar_angle_cos = cos(G_PI * avatar_angle / 180.0);
-		avatar_angle_sin = sin(G_PI * avatar_angle / 180.0);
+		avatar_angle_cos = cos(PI * avatar_angle / 180.0);
+		avatar_angle_sin = sin(PI * avatar_angle / 180.0);
 		
 		if (gfx_1stperson) {
 			glRotatef(90, -1, 0, 0);

@@ -23,7 +23,6 @@
 #include <windows.h>
 #endif
 
-#include <glib.h>
 #include <GL/gl.h>
 
 typedef struct _AstroMesh AstroMesh;
@@ -32,28 +31,32 @@ typedef struct _AstroPoly AstroPoly;
 typedef struct _AstroColor AstroColor;
 	
 struct _AstroVertex {
-	gchar *name;
+	char *name;
 	GLfloat pt[3];
 	GLfloat normal[3];
 };
 
 struct _AstroColor {
-	gchar *name;
+	char *name;
 	GLfloat color[3];
 };
 
 struct _AstroPoly {
 	AstroColor *color;
-	GPtrArray *vertexes;
+        AstroVertex **vertices;
+        int num_vertices;
 };
 
 struct _AstroMesh {
-	GHashTable *vertexes;		// hashed by name
-	GHashTable *colors;		// ditto
-	GPtrArray *polygons;
+        AstroVertex **vertices;
+        int num_vertices;
+        AstroColor **colors;
+        int num_colors;
+        AstroPoly **polygons;
+        int num_polygons;
 };
 
-AstroMesh *mesh_read_from_file(gchar *filename);
+AstroMesh *mesh_read_from_file(char *filename);
 
 #endif /* #ifndef ASTEROIDS_MESH_H */
 

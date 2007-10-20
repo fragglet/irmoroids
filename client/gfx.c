@@ -22,8 +22,9 @@
 
 #include <SDL.h>
 #include <GL/gl.h>
-#include <glib.h>
 #include <math.h>
+
+#include "common/math-constants.h"
 
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
@@ -87,7 +88,7 @@ void gfx_draw_circle(int res)
 	glBegin(GL_POLYGON);
 
 	for (i=0; i<res; ++i) {
-		GLfloat angle = (2 * G_PI * i) / res;
+		GLfloat angle = (2 * PI * i) / res;
 
 		glVertex2f(cos(angle), sin(angle));
 	}

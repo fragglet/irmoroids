@@ -24,7 +24,6 @@
 #include <SDL.h>
 
 #include <irmo.h>
-#include <glib.h>
 
 #include "common/net.h"
 
@@ -107,7 +106,7 @@ static void run_sdl_events()
 	}
 }
 
-extern gboolean irmo_proto_use_preexec;
+extern int irmo_proto_use_preexec;
 static char *hostname;
 
 void parse_cmd_line(int argc, char *argv[])
@@ -121,7 +120,7 @@ void parse_cmd_line(int argc, char *argv[])
 			++i;
 			net_limit = atoi(argv[i]);
 		} else if (!strcmp(argv[i], "--no-preexec")) {
-			irmo_proto_use_preexec = FALSE;
+			irmo_proto_use_preexec = 0;
 		} else {
 			hostname = argv[i];
 		}
