@@ -21,9 +21,7 @@
 
 typedef struct _AstroObject AstroObject;
 typedef struct _AstroPlayer AstroPlayer;
-typedef struct _AstroClient AstroClient;
 
-#include <glib.h>
 #include <irmo.h>
 
 typedef enum {
@@ -35,7 +33,7 @@ typedef enum {
 
 struct _AstroObject {
 	AstroObjectType type;
-	gboolean destroyed;
+	int destroyed;
 	IrmoObject *object;
 	float scale;
 	int size;
@@ -43,23 +41,38 @@ struct _AstroObject {
 	int angle;
 	int dx, dy;
 	int missile_life;
+
+        // Next object in linked list
+
+        AstroObject *next;
 };
 
 struct _AstroPlayer {
-	AstroClient *client;
-	IrmoObject *client_obj;		// client side player object
-	IrmoObject *player_obj; 	// a Player object about player
-	AstroObject *avatar;		// their ship
-};
+        // Client this player is connected from
 
-struct _AstroClient {
-	IrmoClient *client;
-	GSList *players;
+        IrmoClient *client;
+
+        // Client side player object
+
+	IrmoObject *client_obj;
+
+ 	// A Player object about player
+
+	IrmoObject *player_obj;
+
+        // Their ship
+
+	AstroObject *avatar;
+
+        // Next player in linked list.
+
+        AstroPlayer *next;
 };
 
 extern IrmoWorld *world;
-extern GSList *world_players;
-extern GSList *world_objects;
+extern AstroPlayer *world_players;
+extern AstroObject *world_objects;
+extern int num_world_players;
 
 void world_init();
 AstroObject *world_object_new(char *classname, int x, int y, int angle);

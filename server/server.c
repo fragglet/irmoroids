@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 #include "common/config.h"
 #include "common/net.h"
@@ -31,40 +32,47 @@ static IrmoServer *server;
 
 void player_write_message(AstroPlayer *player, char *message, ...)
 {
-	char *text;
+        char buf[128];
 	va_list args;
 
 	va_start(args, message);
 
-	text = g_strdup_vprintf(message, args);
+        vsprintf(buf, message, args);
 
 	va_end(args);
 
 	irmo_world_method_call(irmo_object_get_world(player->client_obj),
 			       "display_message", 
 			       irmo_object_get_id(player->client_obj),
-			       text);
-
-	free(text);
+			       buf);
 }
 
 // destroy objects on client disconnect
 
 static void destroy_player(IrmoClient *client, AstroPlayer *player)
 {
-	world_players = g_slist_remove(world_players, player);
+        AstroPlayer **rover;
+
+        // Unhook from linked list
+
+        for (rover=&world_players; *rover != NULL; rover=&(*rover)->next) {
+                if (*rover == player) {
+                        *rover = (*rover)->next;
+                        break;
+                }
+        }
+
+        // Destroy the player object and avatar
 
 	irmo_object_destroy(player->player_obj);
-
 	world_object_destroy(player->avatar);
 
-	player->client->players = g_slist_remove(player->client->players,
-						 player);
-	
 	free(player);
+
+        --num_world_players;
 }
 
-static void new_player(IrmoObject *object, AstroClient *client)
+static void new_player(IrmoObject *object, IrmoClient *client)
 {
 	IrmoWorld *client_world;
 	AstroPlayer *player;
@@ -95,19 +103,21 @@ static void new_player(IrmoObject *object, AstroClient *client)
 	irmo_object_set_int(avatar->object, "player", 
 			    irmo_object_get_id(playerobj));
 	
-	player = g_new0(AstroPlayer, 1);
-
-	player->client = client;
+	player = malloc(sizeof(AstroPlayer));
+        player->client = client;
 	player->client_obj = object;
 	player->player_obj = playerobj;
 	player->avatar = avatar;
 
-	world_players = g_slist_append(world_players, player);
+        // Hook into players list
+
+        player->next = world_players;
+        world_players = player;
 
 	// call client and tell them to associate the new player
 	// with their own player object
 
-	client_world = irmo_client_get_world(client->client);
+	client_world = irmo_client_get_world(client);
 
 	irmo_world_method_call(client_world, "assoc_player",
 				  irmo_object_get_id(object),
@@ -116,37 +126,25 @@ static void new_player(IrmoObject *object, AstroClient *client)
 	irmo_object_watch_destroy(object, (IrmoObjCallback) destroy_player,
 				  player);
 
-	client->players = g_slist_append(client->players, player);
+        ++num_world_players;
 
 	player_write_message(player, "welcome to this server.");
 	player_write_message(player, "there are currently %i players in the game",
-			     g_slist_length(world_players));
+                             num_world_players);
+
+        // When the client disconnects, destroy the player
+
+        irmo_client_watch_disconnect(client, (IrmoClientCallback) destroy_player,
+                                     player);
 }
 
-static void on_disconnect(IrmoClient *client, AstroClient *as_client)
+static void on_connect(IrmoClient *client, void *user_data)
 {
-	while (as_client->players) {
-		destroy_player(client, 
-			       (AstroPlayer *) g_slist_nth_data(as_client->players, 0));
-	}
-	
-	free(as_client);
-}
-
-static void on_connect(IrmoClient *client, gpointer user_data)
-{
-	AstroClient *as_client;
 	IrmoWorld *client_world 
 		= irmo_client_get_world(client);
 
-	as_client = g_new0(AstroClient, 1);
-	as_client->client = client;
-	
-	irmo_client_watch_disconnect(client, 
-				     (IrmoClientCallback) on_disconnect,
-				     as_client);
 	irmo_world_watch_new(client_world, "Player",
-			     (IrmoObjCallback) new_player, as_client);
+			     (IrmoObjCallback) new_player, client);
 }
 
 void server_init()

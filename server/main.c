@@ -16,25 +16,16 @@
 //
 //---------------------------------------------------------------------
 
-#include <glib.h>
+#include <SDL.h>
 #include <irmo.h>
 
 #include "world.h"
 
 #define SAMPLE_TIME 50
 
-long long get_ms()
-{
-	GTimeVal nowtime;
-	
-	g_get_current_time(&nowtime);
-
-	return nowtime.tv_sec * 1000 + nowtime.tv_usec / 1000;
-}
-
 int main(int argc, char *argv[])
 {
-	long long oldmovetime;
+        Uint32 oldmovetime;
 	int i;
 
 	srand(time(NULL));
@@ -45,15 +36,18 @@ int main(int argc, char *argv[])
 	for (i=0; i<4; ++i)
 		world_new_rock(-1, -1, 1.5);
 	
-	for (oldmovetime = get_ms();; ) {
-		long long nowtime = get_ms();
+        oldmovetime = SDL_GetTicks();
+
+        for (;;) {
+                Uint32 nowtime = SDL_GetTicks();
 		
 		if (nowtime - oldmovetime > SAMPLE_TIME) {
 			world_run();
 			oldmovetime += SAMPLE_TIME;
-		} else
-			g_usleep(SAMPLE_TIME / 4);
-		
+		} else {
+			SDL_Delay(SAMPLE_TIME / 4);
+		}
+
 		server_run(); 
 	}
 }

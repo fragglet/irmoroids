@@ -18,11 +18,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <math.h>
 
 #include <irmo.h>
-#include <irmo/method.h>
 
 #include "common/config.h"
 #include "common/net.h"
@@ -31,35 +31,33 @@
 
 #define EXPLOSION_TIME 10
 
-static gboolean collision_occurred;
+#ifndef PI
+#define PI           3.14159265358979323846  /* pi */
+#endif
+
+#ifndef PI_2
+#define PI_2         1.57079632679489661923  /* pi/2 */
+#endif
 
 IrmoWorld *world;
-GSList *world_objects = NULL;
-GSList *world_players = NULL;
-
-static gint find_player_foreach(AstroPlayer *p1, IrmoObject *needle)
-{
-	if (p1->player_obj == needle)
-		return 0;
-
-	return 1;
-}
+AstroObject *world_objects = NULL;
+AstroPlayer *world_players = NULL;
+int num_world_players = 0;
 
 AstroPlayer *find_player(IrmoObject *needle)
 {
-	GSList *result;
+        AstroPlayer *rover;
 	
-	result = g_slist_find_custom(world_players,
-				     needle,
-				     (GCompareFunc) find_player_foreach);
+        for (rover=world_players; rover != NULL; rover = rover->next) {
+                if (rover->player_obj == needle) {
+                        return rover;
+                }
+        }
 
-	if (!result)
-		return NULL;
-
-	return (AstroPlayer *) g_slist_nth_data(result, 0);
+        return NULL;
 }
 
-static void fire_callback(IrmoMethodData *data, gpointer user_data)
+static void fire_callback(IrmoMethodData *data, void *user_data)
 {
 	IrmoObjectID id;
 	IrmoObject *fireplayer;
@@ -77,12 +75,12 @@ static void fire_callback(IrmoMethodData *data, gpointer user_data)
 
 	player = find_player(fireplayer);
 
-	if (player->client->client != irmo_method_get_source(data)) {
+	if (player->client != irmo_method_get_source(data)) {
 		printf("fire_callback: fire from wrong client\n");
 		return;
 	}
 
-	angle = (player->avatar->angle * G_PI * 2) / 0xffff;
+	angle = (player->avatar->angle * PI * 2) / 0xffff;
 	
 	misl = world_object_new("Missile", 
 				player->avatar->x, 
@@ -132,7 +130,8 @@ AstroObject *world_object_new(char *classname, int x, int y, int angle)
 	if (!irmoobj)
 		return NULL;
 
-	obj = g_new0(AstroObject, 1);
+	obj = malloc(sizeof(AstroObject));
+        memset(obj, 0, sizeof(AstroObject));
 	obj->object = irmoobj;
 	obj->x = x;
 	obj->y = y;
@@ -145,18 +144,25 @@ AstroObject *world_object_new(char *classname, int x, int y, int angle)
 	irmo_object_set_int(irmoobj, "angle", obj->angle);
 	irmo_object_set_int(irmoobj, "scale", obj->scale * 256);
 	
-	world_objects = g_slist_append(world_objects, obj);
+        // Hook into linked list
+      
+        obj->next = world_objects;
+        world_objects = obj;
 
 	return obj;
 }
 
 void world_object_destroy(AstroObject *obj)
 {
-	world_objects = g_slist_remove(world_objects, obj);
+        AstroObject *rover;
 
-	irmo_object_destroy(obj->object);
-
-	free(obj);
+        for (rover=world_objects; rover != NULL; rover = rover->next) {
+                if (rover->next == obj) {
+                        rover->next = rover->next->next;
+                        irmo_object_destroy(obj->object);
+                        free(obj);
+                }
+        }
 }
 
 static void rock_collision(AstroObject *rock1, AstroObject *rock2)
@@ -196,7 +202,8 @@ static void missile_hit_rock(AstroObject *missile, AstroObject *target)
 {
 	int i;
 	
-	missile->destroyed = target->destroyed = TRUE;
+	missile->destroyed = 1;
+        target->destroyed = 1;
 
 	world_new_explosion(target);
 
@@ -213,8 +220,8 @@ static void missile_hit_rock(AstroObject *missile, AstroObject *target)
 		
 		// always start them off at the same place
 
-		dx = 512 * cos(i * G_PI_2);
-		dy = 512 * sin(i * G_PI_2);
+		dx = 512 * cos(i * PI_2);
+		dy = 512 * sin(i * PI_2);
 		
 		x = (int) (target->x + 4 * target->scale * dx) & 0xffff;
 		y = (int) (target->y + 4 * target->scale * dy) & 0xffff;
@@ -228,7 +235,7 @@ static void missile_hit_rock(AstroObject *missile, AstroObject *target)
 
 		// fly off at a random angle
 		
-		angle = G_PI_2 * (i + bellcurve(3) - 0.5);
+		angle = PI_2 * (i + bellcurve(3) - 0.5);
 
 		speed = bellcurve(5) * 512;
 
@@ -240,7 +247,7 @@ static void missile_hit_rock(AstroObject *missile, AstroObject *target)
 	}
 }
 
-static gboolean do_collision(AstroObject *obj1, AstroObject *obj2)
+static int do_collision(AstroObject *obj1, AstroObject *obj2)
 {
 	if (obj1->type == OBJECT_ROCK && obj2->type == OBJECT_ROCK) {
 		rock_collision(obj1, obj2);
@@ -251,48 +258,61 @@ static gboolean do_collision(AstroObject *obj1, AstroObject *obj2)
 		   && obj2->type == OBJECT_SHIP) {
 		rock_collision(obj1, obj2);
 	} else {
-		return FALSE;
+		return 0;
 	}
 
-	collision_occurred = TRUE;
-
-	return TRUE;
+	return 1;
 }
 
-static void run_collisions(AstroObject *obj1, AstroObject *obj2)
+// Check for collisions with the given object.  Returns true if a 
+// collision occurred.
+
+static int run_collisions(AstroObject *obj)
 {
+        AstroObject *rover;
 	double dx, dy;
 	double d;
 
-	// only 1 collision allowed
-	
-	if (collision_occurred)
-		return;
-	
-	if (obj1->destroyed || obj2->destroyed)
-		return;
-	
-	if (obj1 == obj2)
-		return;
+        if (obj->destroyed) {
+                return 0;
+        }
 
-	dx = obj1->x - obj2->x;
-	dy = obj1->y - obj2->y;
+        for (rover=world_objects; rover != NULL; rover = rover->next) {
+                if (rover->destroyed) {
+                        continue;
+                }
 
-	d = sqrt(dx * dx + dy * dy);
+                // Don't collide with self
 
-	if (d < obj1->size + obj2->size) {
-		if (!do_collision(obj1, obj2))
-			do_collision(obj2, obj1);
-	}
+                if (obj == rover) {
+                        continue;
+                }
+
+                dx = rover->x - obj->x;
+                dy = rover->y - obj->y;
+
+                d = sqrt(dx * dx + dy * dy);
+
+                if (d < rover->size + obj->size) {
+                        if (do_collision(rover, obj) 
+                         || do_collision(obj, rover)) {
+                                return 1;
+                        }
+                }
+        }
+
+        return 0;
 }
 
-static void world_run_objects(AstroObject *obj, gpointer user_data)
+static void world_run_object(AstroObject *obj)
 {
+        int collision_occurred;
+
 	if (obj->missile_life) {
 		--obj->missile_life;
 
 		if (obj->missile_life <= 0) {
-			obj->destroyed = TRUE;
+			obj->destroyed = 1;
 
 			// if this is a missile, make it explode
 
@@ -320,10 +340,7 @@ static void world_run_objects(AstroObject *obj, gpointer user_data)
 		// position, as moving here would mean the objects
 		// which collided would be inside each other.
 		
-		collision_occurred = FALSE;
-
-		g_slist_foreach(world_objects,
-				(GFunc) run_collisions, obj);
+		collision_occurred = run_collisions(obj);
 
 		if (collision_occurred) {
 			obj->x = oldx;
@@ -335,11 +352,20 @@ static void world_run_objects(AstroObject *obj, gpointer user_data)
 	}
 }
 
+static void world_run_objects(void)
+{
+        AstroObject *rover;
+
+        for (rover=world_objects; rover != NULL; rover = rover->next) {
+                world_run_object(rover);
+        }
+}
+
 #define SPEED 512
 
-static void world_run_players(AstroPlayer *player, gpointer user_data)
+static void world_run_player(AstroPlayer *player)
 {
-	guint keystate;
+	unsigned int keystate;
 	int turn = 0;
 	
 	keystate = irmo_object_get_int(player->client_obj, "keys");
@@ -357,7 +383,7 @@ static void world_run_players(AstroPlayer *player, gpointer user_data)
 	}
 
 	if (keystate & KEY_ACCEL) {
-		float angle = (player->avatar->angle * 2 * G_PI) / 0xffff;
+		float angle = (player->avatar->angle * 2 * PI) / 0xffff;
 		int dx = SPEED * cos(angle);
 		int dy = SPEED * sin(angle);
 
@@ -367,37 +393,40 @@ static void world_run_players(AstroPlayer *player, gpointer user_data)
 	}		
 }
 
-// garbage collect destroyed objects
-
-static gint world_run_gc_find(AstroObject *a, AstroObject *b)
+static void world_run_players(void)
 {
-	if (a->destroyed)
-		return 0;
+        AstroPlayer *rover;
 
-	return 1;
+        for (rover=world_players; rover != NULL; rover = rover->next) {
+                world_run_player(rover);
+        }
 }
+
+// garbage collect destroyed objects
 
 static void world_run_gc()
 {
-	GSList *found;
+        AstroObject *rover;
+        AstroObject *next;
 
-	while ((found = g_slist_find_custom(world_objects, NULL,
-					    (GCompareFunc)
-					    world_run_gc_find))) {
-		AstroObject *obj
-			= (AstroObject *) g_slist_nth_data(found, 0);
+        rover = world_objects;
 
-		world_object_destroy(obj);
-	}
+        while (rover != NULL) {
+                
+                next = rover->next;
+
+                if (rover->destroyed) {
+                        world_object_destroy(rover);
+                }
+
+                rover = next;
+        }
 }
 
 void world_run()
 {
-	g_slist_foreach(world_objects, 
-			(GFunc) world_run_objects, NULL);
-	g_slist_foreach(world_players,
-			(GFunc) world_run_players, NULL);
-
+        world_run_objects();
+        world_run_players();
 	world_run_gc();	
 }
 

@@ -4,6 +4,7 @@ noinst_LTLIBRARIES=libirmoroids-server.la
 libirmoroids_server_la_CFLAGS=                             \
         -I..                                               \
         $(IRMO_CFLAGS)                                     \
+        $(SDL_CFLAGS)                                      \
         -DINSTALL_ROOT=\"$(pkgdatadir)\"
 
 libirmoroids_server_la_SOURCES=                            \
