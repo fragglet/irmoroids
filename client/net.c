@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <irmo.h>
 #include <GL/gl.h>
+#include <SDL.h>
 #include <math.h>
 
 #include "common/config.h"
@@ -197,9 +198,9 @@ void net_block(void)
 	irmo_socket_block(irmo_connection_get_socket(connection), 20);
 }
 
-static long long get_object_time(IrmoObject *obj)
+static Uint32 get_object_time(IrmoObject *obj)
 {
-	long long t = SDL_GetTicks() / 10;
+	Uint32 t = SDL_GetTicks() / 10;
 
 	t += irmo_object_get_id(obj) * 4000;
 
@@ -208,7 +209,7 @@ static long long get_object_time(IrmoObject *obj)
 
 static void tumble_translation(IrmoObject *obj)
 {
-	long long t = get_object_time(obj) % (360 * 256);
+	Uint32 t = get_object_time(obj) % (360 * 256);
 	float size = irmo_object_get_int(obj, "scale") / 256.0;
 	
 	glRotatef(t / size, 0.7, 0.2, 1);
@@ -217,7 +218,7 @@ static void tumble_translation(IrmoObject *obj)
 
 static void twist_translation(IrmoObject *obj)
 {
-	long long t = get_object_time(obj);
+	Uint32 t = get_object_time(obj);
 
 	glRotatef(t, 0, 1, 0);
 }
