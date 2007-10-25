@@ -1,5 +1,3 @@
-// Emacs style mode select -*- C++ -*-
-//---------------------------------------------------------------------
 //
 // Copyright (C) 2002-3 Simon Howard
 //
@@ -14,7 +12,6 @@
 // program; if not, write to the Free Software Foundation, Inc., 59 Temple
 // Place - Suite 330, Boston, MA 02111-1307, USA.
 //
-//---------------------------------------------------------------------
 
 #ifndef ASTRO_COMMON_NET_H
 #define ASTRO_COMMON_NET_H
