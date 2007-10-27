@@ -157,7 +157,7 @@ void net_connect(char *host)
 		exit(-1);
 	}
 
-	connection = irmo_connect(IRMO_SOCKET_IPV4, 
+	connection = irmo_connect(IRMO_NET_IPV4, 
 				  host, SERVER_PORT,
 				  iface, client_world);
 
@@ -195,7 +195,7 @@ void net_run(void)
 
 void net_block(void)
 {
-	irmo_socket_block(irmo_connection_get_socket(connection), 20);
+        irmo_connection_block(connection, 50);
 }
 
 static Uint32 get_object_time(IrmoObject *obj)

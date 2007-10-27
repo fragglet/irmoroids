@@ -156,23 +156,13 @@ void server_init()
 		exit(-1);
 	}
 
-	server = irmo_server_new(IRMO_SOCKET_IPV6, SERVER_PORT, world,
+	server = irmo_server_new(IRMO_NET_IPV4, SERVER_PORT, world,
                                  client_interface);
 
-	if (server) {
-		printf("server_init: Using IPv6\n");
-	} else {
-		server = irmo_server_new(IRMO_SOCKET_IPV4, SERVER_PORT, world, client_interface);
-
-		if (server) {
-			printf("server_init: Using IPv4\n");
-		} else {
-		
-			fprintf(stderr, "server_init: Unable to start server on port\n");
-			exit(-1);
-
-		}
-	}
+        if (server == NULL) {
+                fprintf(stderr, "Error creating server\n");
+                exit(-1);
+        }
 
 	irmo_server_watch_connect(server, on_connect, NULL);
 }
