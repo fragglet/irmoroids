@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include <math.h>
 
@@ -144,15 +145,18 @@ AstroObject *world_object_new(char *classname, int x, int y, int angle)
 
 void world_object_destroy(AstroObject *obj)
 {
-        AstroObject *rover;
+        AstroObject **rover;
 
-        for (rover=world_objects; rover != NULL; rover = rover->next) {
-                if (rover->next == obj) {
-                        rover->next = rover->next->next;
+        for (rover=&world_objects; *rover != NULL; rover = &((*rover)->next)) {
+                if (*rover == obj) {
+                        *rover = obj->next;
                         irmo_object_destroy(obj->object);
                         free(obj);
+                        return;
                 }
         }
+
+        assert(0);
 }
 
 static void rock_collision(AstroObject *rock1, AstroObject *rock2)
@@ -241,11 +245,9 @@ static int do_collision(AstroObject *obj1, AstroObject *obj2)
 {
 	if (obj1->type == OBJECT_ROCK && obj2->type == OBJECT_ROCK) {
 		rock_collision(obj1, obj2);
-	} else if (obj1->type == OBJECT_ROCK
-		   && obj2->type == OBJECT_MISSILE) {
+	} else if (obj1->type == OBJECT_ROCK && obj2->type == OBJECT_MISSILE) {
 		missile_hit_rock(obj2, obj1);
-	} else if (obj1->type == OBJECT_ROCK
-		   && obj2->type == OBJECT_SHIP) {
+	} else if (obj1->type == OBJECT_ROCK && obj2->type == OBJECT_SHIP) {
 		rock_collision(obj1, obj2);
 	} else {
 		return 0;
@@ -307,8 +309,7 @@ static void world_run_object(AstroObject *obj)
 			// if this is a missile, make it explode
 
 			if (obj->type == OBJECT_MISSILE) {
-				AstroObject *explosion = 
-					world_new_explosion(obj);
+                                world_new_explosion(obj);
 			}
 		}
 		if (obj->type == OBJECT_EXPLOSION) {
@@ -318,7 +319,10 @@ static void world_run_object(AstroObject *obj)
 	}
 
 	if (obj->dx || obj->dy) {
-		int oldx=obj->x, oldy=obj->y;
+		int oldx, oldy;
+
+                oldx = obj->x;
+                oldy = obj->y;
 	
 		obj->x += obj->dx;
 		obj->y += obj->dy;
