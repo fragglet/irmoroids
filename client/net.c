@@ -124,6 +124,7 @@ void net_connect(char *host)
 {
 	IrmoInterface *iface; 
 	IrmoInterface *client_interface;
+	IrmoClientState state;
 
 	// build client world
 
@@ -139,7 +140,7 @@ void net_connect(char *host)
 	irmo_interface_unref(client_interface);
 
 	// callbacks
-	
+
 	irmo_world_method_watch(client_world, "display_message",
 				display_message, NULL);
 
@@ -162,7 +163,21 @@ void net_connect(char *host)
 				  iface, client_world);
 
 	if (!connection) {
-		fprintf(stderr, "unable to connect to server\n");
+		fprintf(stderr, "unable to create connection object!\n");
+		exit(-1);
+	}
+
+
+	// Wait to connect to the server
+
+	while (irmo_connection_get_state(connection) == IRMO_CLIENT_CONNECTING) {
+		irmo_connection_run(connection);
+	}
+
+	state = irmo_connection_get_state(connection);
+
+	if (state == IRMO_CLIENT_DISCONNECTED) {
+		fprintf(stderr, "failed to connect to server\n");
 		exit(-1);
 	}
 
@@ -185,6 +200,13 @@ void net_connect(char *host)
 void net_disconnect()
 {
 	irmo_disconnect(connection);
+
+	// Wait for the disconnection handshake to complete:
+
+	while (irmo_connection_get_state(connection) != IRMO_CLIENT_DISCONNECTED) {
+		irmo_connection_run(connection);
+	}
+
 	irmo_connection_unref(connection);
 }
 
