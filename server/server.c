@@ -130,8 +130,8 @@ static void new_player(IrmoObject *object, IrmoClient *client)
 
         // When the client disconnects, destroy the player
 
-        irmo_client_watch_disconnect(client, (IrmoClientCallback) destroy_player,
-                                     player);
+        irmo_client_watch_state(client, IRMO_CLIENT_DISCONNECTED,
+	                        (IrmoClientCallback) destroy_player, player);
 }
 
 static void on_connect(IrmoClient *client, void *user_data)

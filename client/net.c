@@ -101,12 +101,12 @@ void player_callback(IrmoMethodData *data, void *user_data)
 	player = irmo_world_get_object_for_id(world, id);
 }
 
-void all_object_callback(IrmoObject *object, char *varname, void *user_data)
+void all_object_callback(IrmoObject *object, IrmoClassVar *var, void *user_data)
 {
 	printf("object %i(%s)::%s changed\n", 
 	       irmo_object_get_id(object),
 	       irmo_object_get_class(object),
-	       varname);
+	       irmo_class_var_get_name(var));
 }
 
 static void display_message(IrmoMethodData *data, void *user_data)
@@ -171,6 +171,7 @@ void net_connect(char *host)
 	// Wait to connect to the server
 
 	while (irmo_connection_get_state(connection) == IRMO_CLIENT_CONNECTING) {
+		//irmo_connection_block(connection, 0);
 		irmo_connection_run(connection);
 	}
 
@@ -181,20 +182,33 @@ void net_connect(char *host)
 		exit(-1);
 	}
 
+	printf("Connected to server... ");
+	fflush(stdout);
+
 	irmo_client_set_max_sendwindow(connection, net_limit);
 
-	irmo_client_watch_disconnect(connection, net_disconnected, NULL);
+	irmo_client_watch_state(connection, IRMO_CLIENT_DISCONNECTED,
+	                        net_disconnected, NULL);
 
 	irmo_interface_unref(iface);
 
 	world = irmo_connection_get_world(connection);
 
-	//	irmo_world_watch_class(world, NULL, NULL, 
-	//			all_object_callback, NULL);
+	//irmo_world_watch_class(world, NULL, NULL,
+	//                       all_object_callback, NULL);
 	irmo_world_method_watch(client_world, "assoc_player",
 				   player_callback, NULL);
 
 	make_stars();
+
+	// Wait for synchronization:
+
+	while (irmo_connection_get_state(connection) == IRMO_CLIENT_CONNECTED) {
+		//irmo_connection_block(connection, 0);
+		irmo_connection_run(connection);
+	}
+
+	printf("synchronized world state\n");
 }
 
 void net_disconnect()
