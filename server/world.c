@@ -159,19 +159,62 @@ void world_object_destroy(AstroObject *obj)
         assert(0);
 }
 
+static void matrix_mult2(float *matrix, float *x, float *result)
+{
+	result[0] = x[0] * matrix[0] + x[1] * matrix[1];
+	result[1] = x[0] * matrix[2] + x[1] * matrix[3];
+}
+
 static void rock_collision(AstroObject *rock1, AstroObject *rock2)
 {
-	float momx1, momx2, momy1, momy2;
+	float dx, dy;
+	float penetrate_dist;
+	float transform[4];
+	float x[2], r[2];
+	float c, s;
+	float d;
 
-	momx1 = rock1->dx * rock1->size;
-	momy1 = rock1->dy * rock1->size;
-	momx2 = rock2->dx * rock2->size;
-	momy2 = rock2->dy * rock2->size;
+	// Distance between rocks:
 
-	rock1->dx = momx2 / rock1->size;
-	rock1->dy = momy2 / rock1->size;
-	rock2->dx = momx1 / rock2->size;
-	rock2->dy = momy1 / rock2->size;
+	dx = rock2->x - rock1->x;
+	dy = rock2->y - rock1->y;
+	d = sqrt(dx*dx + dy*dy);
+
+	// The distance they have penetrated "into" each other:
+
+	penetrate_dist = rock1->size + rock2->size - d;
+
+	// Push the rocks apart so that they are just touching:
+
+	c = dx / d;
+	s = dy / d;
+
+	rock2->x += penetrate_dist * c / 2;
+	rock2->y += penetrate_dist * s / 2;
+	rock1->x -= penetrate_dist * c / 2;
+	rock1->y -= penetrate_dist * s / 2;
+
+	// Force vector between the two balls:
+
+	x[0] = rock1->dx * rock1->size - rock2->dx * rock2->size;
+	x[1] = rock1->dy * rock1->size - rock2->dy * rock2->size;
+
+	// Rotate the force vector to get the force in the direction
+	// between the two balls. Build a transformation matrix to
+	// rotate the direction vector:
+
+	transform[0] = c;  transform[1] = s;
+	transform[2] = -s; transform[3] = c;
+
+	matrix_mult2(transform, x, r);
+
+	// r[0] gives the force between the balls.  Apply this force
+	// to both balls in opposite directions:
+
+	rock1->dx -= c * r[0] / rock1->size;
+	rock1->dy -= s * r[0] / rock1->size;
+	rock2->dx += c * r[0] / rock2->size;
+	rock2->dy += s * r[0] / rock2->size;
 }
 
 static float frand()
