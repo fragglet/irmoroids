@@ -1,0 +1,18 @@
+" Local vimrc configuration file.  Install the localvimrc.vim vim script.
+set expandtab
+set tabstop=8
+set softtabstop=8
+set shiftwidth=8
+
+" Add all tag files to tags path.
+
+let topdir = findfile("configure.in", ".;")
+let topdir = substitute(topdir, "configure.in", "", "")
+
+" Check tags file in current dir:
+set tags+=tags
+
+exec "set tags+=common/tags"
+
+unlet topdir
+
