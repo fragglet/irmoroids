@@ -18,7 +18,7 @@
 #endif
 
 #include <GL/gl.h>
-#include <SDL.h>
+#include "SDL.h"
 
 #include <irmo.h>
 

@@ -17,7 +17,7 @@
 #include <windows.h>
 #endif
 
-#include <SDL.h>
+#include "SDL.h"
 #include <GL/gl.h>
 #include <math.h>
 

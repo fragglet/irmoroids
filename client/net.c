@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <irmo.h>
 #include <GL/gl.h>
-#include <SDL.h>
+#include "SDL.h"
 #include <math.h>
 
 #include "common/config.h"
