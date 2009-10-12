@@ -1,4 +1,8 @@
 
+EXTRA_DIST= common/config.h          \
+            common/math-constants.h  \
+            common/net.h
+
 if HAVE_CLIENT
 
 bin_PROGRAMS=irmoroids irmoroids-server

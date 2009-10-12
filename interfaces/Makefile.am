@@ -1,3 +1,6 @@
+
+EXTRA_DIST=interfaces.h
+
 noinst_LTLIBRARIES=libinterfaces.la
 
 libinterfaces_la_SOURCES=astroclient.if astro.if
